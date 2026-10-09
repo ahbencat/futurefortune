@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>排列五历史数据 (2004-2026)</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>排列五历史数据</h1>
+            <p class="subtitle">2004-11-26 至 2026-10-09 | 共 7,735 期</p>
+        </header>
+
+        <!-- 搜索和筛选 -->
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜索期号，如：26268">
+                <button onclick="searchData()">搜索</button>
+            </div>
+            <div class="filter-box">
+                <label>年份：</label>
+                <select id="yearFilter" onchange="filterByYear()">
+                    <option value="">全部</option>
+                </select>
+                <label>每页：</label>
+                <select id="pageSize" onchange="changePageSize()">
+                    <option value="20">20条</option>
+                    <option value="50" selected>50条</option>
+                    <option value="100">100条</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 数据表格 -->
+        <div class="table-container">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>期号</th>
+                        <th>日期</th>
+                        <th>万位</th>
+                        <th>千位</th>
+                        <th>百位</th>
+                        <th>十位</th>
+                        <th>个位</th>
+                        <th>号码</th>
+                        <th>和值</th>
+                        <th>跨度</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination">
+            <button onclick="prevPage()">上一页</button>
+            <span id="pageInfo">第 1 页 / 共 155 页</span>
+            <button onclick="nextPage()">下一页</button>
+        </div>
+
+        <!-- 统计图表 -->
+        <div class="charts-section">
+            <h2>统计分析</h2>
+            
+            <div class="chart-row">
+                <div class="chart-box">
+                    <h3>各位号码频率统计</h3>
+                    <canvas id="freqChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>和值分布</h3>
+                    <canvas id="sumChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-row">
+                <div class="chart-box">
+                    <h3>跨度分布</h3>
+                    <canvas id="spanChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>最近30期冷热号</h3>
+                    <canvas id="hotColdChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 遗漏值 -->
+        <div class="omit-section">
+            <h2>当前遗漏值（距离上次开出期数）</h2>
+            <div class="omit-grid" id="omitGrid"></div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
