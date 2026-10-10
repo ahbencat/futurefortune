@@ -9,16 +9,16 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1 id="pageTitle">排列五(含排列三)历史数据</h1>
-            <p class="subtitle" id="pageSubtitle">2004-11-26 至 2026-10-09 | 共 7,735 期</p>
-        </header>
-
-        <!-- 彩种切换 -->
+        <!-- 彩种切换（置于最顶部） -->
         <div class="lottery-switch">
             <button class="switch-btn active" data-lottery="pl5" onclick="setLottery('pl5')">排列五(含排列三)</button>
             <button class="switch-btn" data-lottery="dlt" onclick="setLottery('dlt')">超级大乐透</button>
         </div>
+
+        <header>
+            <h1 id="pageTitle">排列五(含排列三)历史数据</h1>
+            <p class="subtitle" id="pageSubtitle">2004-11-26 至 2026-10-09 | 共 7,735 期</p>
+        </header>
 
         <!-- 搜索和筛选 -->
         <div class="controls">
@@ -144,6 +144,7 @@
     </div>
 
     <script src="assets/data/data.js"></script>
+    <script src="assets/data/data_p3.js"></script>
     <script src="assets/data/data_dlt.js"></script>
     <script src="assets/js/app.js"></script>
 </body>

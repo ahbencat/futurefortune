@@ -98,25 +98,49 @@ function renderTable() {
     renderPagination();
 }
 
+// 排列三数据按期号索引（真实开奖号码）
+let p3ByIssue = null;
+function getP3Map() {
+    if (p3ByIssue === null) {
+        p3ByIssue = {};
+        if (typeof LOTTERY_DATA_P3 !== 'undefined') {
+            LOTTERY_DATA_P3.forEach(d => { p3ByIssue[d.issue_no] = d.numbers; });
+        }
+    }
+    return p3ByIssue;
+}
+
 // 渲染排列五表格
 function renderPl5Table() {
     const tbody = document.getElementById('tableBody');
-    const pageData = currentPageData();
+    const p3Map = getP3Map();
 
-    tbody.innerHTML = pageData.map(item => {
+    tbody.innerHTML = currentPageData().map(item => {
         const nums = item.numbers.map(n => parseInt(n));
         const sum = nums.reduce((a, b) => a + b, 0);
         const span = Math.max(...nums) - Math.min(...nums);
-        // 前三位用 pl3-ball（排列3数据），后两位用 pl5-ball；颜色按数字（n0-n9）统一配色，与位置无关
-        const pl3Balls = nums.slice(0, 3).map(n => `<span class="pl3-ball n${n}">${n}</span>`).join('');
-        const pl5Balls = nums.slice(3).map(n => `<span class="pl5-ball n${n}">${n}</span>`).join('');
+
+        // 04009-04020 期间排列三与排列五独立摇奖，前三位并不等于排列三开奖号码
+        const p3 = p3Map[item.issue_no];
+        const differs = p3 && p3.join('') !== item.numbers.slice(0, 3).join('');
+
+        // 数据相同：左侧排列三框取排列五前三位 + 右侧后两位（常规格式）
+        // 数据不同：左侧排列三框显示真实开奖号码 + 右侧完整显示排列五
+        const p3Numbers = differs ? p3.map(Number) : nums.slice(0, 3);
+        const pl5Numbers = differs ? nums : nums.slice(3);
+
+        // 颜色按数字（n0-n9）统一配色，与位置无关
+        const pl3Balls = p3Numbers.map(n => `<span class="pl3-ball n${n}">${n}</span>`).join('');
+        const pl5Balls = pl5Numbers.map(n => `<span class="pl5-ball n${n}">${n}</span>`).join('');
 
         return `<tr>
             <td>${item.issue_no}</td>
             <td>${item.date}</td>
             <td colspan="5" class="pl5-cell">
                 <div class="pl5-group">
-                    <div class="pl3-cell"><div class="pl3-group">${pl3Balls}</div></div>
+                    <div class="pl3-cell"${differs ? ' title="2004年早期排列三与排列五独立摇奖，前三位不相同"' : ''}>
+                        <div class="pl3-group">${pl3Balls}</div>
+                    </div>
                     <div class="pl5-only">${pl5Balls}</div>
                 </div>
             </td>

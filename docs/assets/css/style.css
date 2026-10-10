@@ -327,35 +327,39 @@ tr:hover {
 .omit-ball.warm { background: #ffd93d; color: #333; }
 .omit-ball.cold { background: #6bcf7f; color: white; }
 
-/* 彩种切换 */
+/* 彩种切换（页面最顶部） */
 .lottery-switch {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin: 0 0 20px;
 }
 
 .switch-btn {
-    padding: 10px 24px;
+    padding: 14px 44px;
     background: white;
-    border: 1px solid #ddd;
+    border: 2px solid #e0e4ee;
     border-radius: 999px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 600;
     color: #555;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     transition: all 0.2s;
 }
 
 .switch-btn:hover {
     border-color: #667eea;
     color: #667eea;
+    transform: translateY(-1px);
 }
 
 .switch-btn.active {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-color: transparent;
     color: white;
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.45);
 }
 
 /* 大乐透：前区红球 / 后区蓝球 */
@@ -434,5 +438,10 @@ tr:hover {
     
     .search-box input {
         width: 100%;
+    }
+
+    .switch-btn {
+        padding: 12px 24px;
+        font-size: 15px;
     }
 }
