@@ -38,15 +38,15 @@ jobs:
           import json
 
           # 排列五数据
-          with open('pl5_all_data.json', 'r', encoding='utf-8') as f:
+          with open('datas/pl5_all_data.json', 'r', encoding='utf-8') as f:
               p5_data = json.load(f)
 
           # 排列三数据
-          with open('pl3_all_data.json', 'r', encoding='utf-8') as f:
+          with open('datas/pl3_all_data.json', 'r', encoding='utf-8') as f:
               p3_data = json.load(f)
 
           # 大乐透数据
-          with open('dlt_all_data.json', 'r', encoding='utf-8') as f:
+          with open('datas/dlt_all_data.json', 'r', encoding='utf-8') as f:
               dlt_data = json.load(f)
 
           # 生成排列五 data.js
@@ -76,7 +76,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add pl3_all_data.json pl5_all_data.json dlt_all_data.json \
+          git add datas/pl3_all_data.json datas/pl5_all_data.json datas/dlt_all_data.json \
             docs/assets/data/data.js docs/assets/data/data_p3.js docs/assets/data/data_dlt.js
           git diff --staged --quiet || git commit -m "更新彩票数据 $(date +%Y-%m-%d)"
           git push

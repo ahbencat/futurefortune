@@ -17,6 +17,9 @@ import requests
 # 仓库根目录（scripts/ 的上一级）
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# 原始数据文件所在目录
+DATA_DIR = "datas"
+
 # ---------- 江苏体彩网 www.js-lottery.com 通用抓取 ----------
 # 排列三/排列五（itemType=p3/p5）与超级大乐透（itemType=lo）共用同一接口与表格结构
 
@@ -133,8 +136,8 @@ def fetch_all_pages(item_type: str, referer: str, total_pages: int, workers: int
 
 
 def data_path(filename: str) -> str:
-    """仓库根目录下的数据文件路径"""
-    return os.path.join(REPO_ROOT, filename)
+    """数据文件路径（仓库 datas/ 目录下）"""
+    return os.path.join(REPO_ROOT, DATA_DIR, filename)
 
 
 def load_existing(path: str) -> list:
