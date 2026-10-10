@@ -139,6 +139,24 @@ tr:hover {
 .num-ball:nth-child(5) { background: #fa709a; }
 
 /* 排列3数据凸显样式 */
+.pl3-cell {
+    border: 2px solid #e74c3c;
+    border-radius: 8px;
+    background: rgba(231, 76, 60, 0.05);
+}
+
+.pl3-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+}
+
+.pl3-header {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
 .pl3-ball {
     display: inline-block;
     width: 32px;
@@ -155,6 +173,28 @@ tr:hover {
 
 .pl3-ball:nth-child(2) { background: #f39c12; border-color: #d35400; box-shadow: 0 0 8px rgba(243, 156, 18, 0.6); }
 .pl3-ball:nth-child(3) { background: #2ecc71; border-color: #27ae60; box-shadow: 0 0 8px rgba(46, 204, 113, 0.6); }
+
+/* 排列五后两位样式 */
+.pl5-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+}
+
+.pl5-ball {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 50%;
+    background: #3498db;
+    color: white;
+    font-weight: bold;
+    margin: 0 3px;
+}
+
+.pl5-ball:nth-child(2) { background: #9b59b6; }
 
 .pagination {
     display: flex;
