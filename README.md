@@ -4,7 +4,7 @@
 
 中国彩票历史数据整理及可视化平台，目前包含排列三、排列五和超级大乐透，后续将增加更多彩种。
 
-**[在线预览](https://ahbencat.github.io/futurefortune/)**
+[![在线预览](https://img.shields.io/badge/在线预览-🌐_GitHub_Pages-blue?style=for-the-badge)](https://ahbencat.github.io/futurefortune/)
 
 ## 数据概览
 
