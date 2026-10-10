@@ -10,9 +10,15 @@
 <body>
     <div class="container">
         <header>
-            <h1>排列五(含排列三)历史数据</h1>
-            <p class="subtitle">2004-11-26 至 2026-10-09 | 共 7,735 期</p>
+            <h1 id="pageTitle">排列五(含排列三)历史数据</h1>
+            <p class="subtitle" id="pageSubtitle">2004-11-26 至 2026-10-09 | 共 7,735 期</p>
         </header>
+
+        <!-- 彩种切换 -->
+        <div class="lottery-switch">
+            <button class="switch-btn active" data-lottery="pl5" onclick="setLottery('pl5')">排列五(含排列三)</button>
+            <button class="switch-btn" data-lottery="dlt" onclick="setLottery('dlt')">超级大乐透</button>
+        </div>
 
         <!-- 搜索和筛选 -->
         <div class="controls">
@@ -35,7 +41,7 @@
         </div>
 
         <!-- 数据表格 -->
-        <div class="table-container">
+        <div class="table-container" id="pl5TableContainer">
             <table id="dataTable">
                 <thead>
                     <tr>
@@ -50,6 +56,23 @@
             </table>
         </div>
 
+        <!-- 大乐透数据表格 -->
+        <div class="table-container" id="dltTableContainer" hidden>
+            <table id="dltTable">
+                <thead>
+                    <tr>
+                        <th>期号</th>
+                        <th>日期</th>
+                        <th colspan="5" class="dlt-front-header">前区</th>
+                        <th colspan="2" class="dlt-back-header">后区</th>
+                        <th>和值</th>
+                        <th>跨度</th>
+                    </tr>
+                </thead>
+                <tbody id="dltTableBody"></tbody>
+            </table>
+        </div>
+
         <!-- 分页 -->
         <div class="pagination">
             <button onclick="prevPage()">上一页</button>
@@ -60,9 +83,9 @@
         </div>
 
         <!-- 统计图表 -->
-        <div class="charts-section">
+        <div class="charts-section" id="chartsPl5">
             <h2>统计分析</h2>
-            
+
             <div class="chart-row">
                 <div class="chart-box">
                     <h3>各位号码频率统计</h3>
@@ -86,14 +109,42 @@
             </div>
         </div>
 
+        <!-- 大乐透统计图表 -->
+        <div class="charts-section" id="chartsDlt" hidden>
+            <h2>统计分析</h2>
+
+            <div class="chart-row">
+                <div class="chart-box">
+                    <h3>前区号码频率统计（01-35）</h3>
+                    <canvas id="dltFrontFreqChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>前区和值分布</h3>
+                    <canvas id="dltSumChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-row">
+                <div class="chart-box">
+                    <h3>前区跨度分布</h3>
+                    <canvas id="dltSpanChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>后区号码频率统计（01-12）</h3>
+                    <canvas id="dltBackFreqChart"></canvas>
+                </div>
+            </div>
+        </div>
+
         <!-- 遗漏值 -->
         <div class="omit-section">
-            <h2>当前遗漏值（距离上次开出期数）</h2>
+            <h2 id="omitTitle">当前遗漏值（距离上次开出期数）</h2>
             <div class="omit-grid" id="omitGrid"></div>
         </div>
     </div>
 
     <script src="assets/data/data.js"></script>
+    <script src="assets/data/data_dlt.js"></script>
     <script src="assets/js/app.js"></script>
 </body>
 </html>

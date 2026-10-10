@@ -29,6 +29,9 @@ jobs:
       - name: 爬取排列三数据
         run: python scripts/fetch_lottery.py --type p3
 
+      - name: 爬取大乐透数据
+        run: python scripts/fetch_dlt.py
+
       - name: 更新 data.js
         run: |
           python3 -c "
@@ -42,6 +45,10 @@ jobs:
           with open('pl3_all_data.json', 'r', encoding='utf-8') as f:
               p3_data = json.load(f)
 
+          # 大乐透数据
+          with open('dlt_all_data.json', 'r', encoding='utf-8') as f:
+              dlt_data = json.load(f)
+
           # 生成排列五 data.js
           with open('docs/assets/data/data.js', 'w', encoding='utf-8') as f:
               f.write('const LOTTERY_DATA = ')
@@ -54,14 +61,22 @@ jobs:
               json.dump(p3_data, f, ensure_ascii=False, separators=(',', ':'))
               f.write(';\n')
 
+          # 生成大乐透 data.js
+          with open('docs/assets/data/data_dlt.js', 'w', encoding='utf-8') as f:
+              f.write('const LOTTERY_DATA_DLT = ')
+              json.dump(dlt_data, f, ensure_ascii=False, separators=(',', ':'))
+              f.write(';\n')
+
           print(f'排列五: {len(p5_data)} 条')
           print(f'排列三: {len(p3_data)} 条')
+          print(f'大乐透: {len(dlt_data)} 条')
           "
 
       - name: 提交并推送
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add pl3_all_data.json pl5_all_data.json docs/assets/data/data.js docs/assets/data/data_p3.js
+          git add pl3_all_data.json pl5_all_data.json dlt_all_data.json \
+            docs/assets/data/data.js docs/assets/data/data_p3.js docs/assets/data/data_dlt.js
           git diff --staged --quiet || git commit -m "更新彩票数据 $(date +%Y-%m-%d)"
           git push

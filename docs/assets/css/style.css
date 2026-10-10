@@ -327,6 +327,97 @@ tr:hover {
 .omit-ball.warm { background: #ffd93d; color: #333; }
 .omit-ball.cold { background: #6bcf7f; color: white; }
 
+/* 彩种切换 */
+.lottery-switch {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.switch-btn {
+    padding: 10px 24px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+    transition: all 0.2s;
+}
+
+.switch-btn:hover {
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.switch-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+/* 大乐透：前区红球 / 后区蓝球 */
+.dlt-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.dlt-front-ball,
+.dlt-back-ball {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    transition: transform 0.2s;
+}
+
+.dlt-front-ball:hover,
+.dlt-back-ball:hover {
+    transform: scale(1.1);
+}
+
+.dlt-front-ball {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    box-shadow: 0 2px 6px rgba(238, 90, 36, 0.4);
+}
+
+.dlt-back-ball {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    box-shadow: 0 2px 6px rgba(41, 128, 185, 0.4);
+}
+
+.dlt-front-cell {
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.06), rgba(255, 200, 200, 0.03));
+    border-radius: 20px;
+}
+
+.dlt-back-cell {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.08), rgba(200, 230, 255, 0.03));
+    border-radius: 20px;
+}
+
+.dlt-front-header {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.dlt-back-header {
+    color: #3498db;
+    font-weight: bold;
+}
+
+/* 大乐透遗漏值：前区/后区各占一行 */
+.omit-grid.wide {
+    grid-template-columns: 1fr;
+}
+
 @media (max-width: 768px) {
     .chart-row {
         grid-template-columns: 1fr;
