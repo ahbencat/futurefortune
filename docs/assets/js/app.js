@@ -42,8 +42,12 @@ function renderTable() {
         return `<tr>
             <td>${item.issue_no}</td>
             <td>${item.date}</td>
-            <td colspan="3" class="pl3-cell"><div class="pl3-group">${pl3Balls}</div></td>
-            <td colspan="2" class="pl5-cell"><div class="pl5-group">${pl5Balls}</div></td>
+            <td colspan="5" class="pl5-cell">
+                <div class="pl5-group">
+                    <div class="pl3-cell"><div class="pl3-group">${pl3Balls}</div></div>
+                    <div class="pl5-only">${pl5Balls}</div>
+                </div>
+            </td>
             <td>${sum}</td>
             <td>${span}</td>
         </tr>`;
