@@ -1,0 +1,4 @@
+# 文本文件统一使用 LF 行尾
+# 抓取脚本在 Linux（含 GitHub Actions）上运行，写出的数据文件均为 LF；
+# 统一后避免每次自动更新产生整文件的行尾 diff。
+* text=auto eol=lf
