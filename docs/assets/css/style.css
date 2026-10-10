@@ -140,9 +140,10 @@ tr:hover {
 
 /* 排列3数据凸显样式 */
 .pl3-cell {
-    background: linear-gradient(135deg, rgba(231, 76, 60, 0.08), rgba(231, 76, 60, 0.02));
-    border-left: 3px solid #e74c3c;
-    border-radius: 6px 0 0 6px;
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(255, 200, 200, 0.05));
+    border: 2px solid rgba(231, 76, 60, 0.4);
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(231, 76, 60, 0.15);
 }
 
 .pl3-group {
@@ -181,9 +182,10 @@ tr:hover {
 
 /* 排列五后两位样式 */
 .pl5-cell {
-    background: linear-gradient(135deg, rgba(52, 152, 219, 0.08), rgba(52, 152, 219, 0.02));
-    border-left: 3px solid #3498db;
-    border-radius: 0 6px 6px 0;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(200, 230, 255, 0.05));
+    border: 2px solid rgba(52, 152, 219, 0.4);
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(52, 152, 219, 0.15);
 }
 
 .pl5-header {
