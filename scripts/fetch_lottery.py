@@ -18,7 +18,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
 
-from lottery_common import data_path, load_existing, merge_data, save_data, print_summary
+from lottery_common import (apply_patches, data_path, fetch_incremental, load_existing,
+                            merge_data, print_summary, save_data)
 
 BASE_URL = "https://www.js-lottery.com/Lottery/_ListData"
 
@@ -166,22 +167,33 @@ def main():
         if existing_data:
             print(f"已有数据: {len(existing_data)} 条")
 
-    # 探测总页数
-    if args.pages:
-        total_pages = args.pages
-    else:
-        print("  探测总页数...")
-        total_pages = get_total_pages(args.type, config["referer"])
-    print(f"  总页数: {total_pages}")
-
     # 抓取数据
-    print(f"  开始抓取（{args.workers} 线程并发）...")
-    all_data = fetch_all(args.type, config["referer"], total_pages, args.workers)
+    if existing_data:
+        # 增量：从最新页开始，追平已有数据即停止（通常 1-2 页）
+        known = {item["issue_no"] for item in existing_data}
+        print("  增量抓取（最新页起，追平后停止）...")
+        all_data, caught_up = fetch_incremental(
+            lambda page: fetch_page(args.type, config["referer"], page), known)
+        if not caught_up:
+            print("  警告: 达到页数上限仍未追平，请改用全量抓取（不带 --update）")
+    else:
+        # 全量：探测总页数后并发抓取
+        if args.pages:
+            total_pages = args.pages
+        else:
+            print("  探测总页数...")
+            total_pages = get_total_pages(args.type, config["referer"])
+        print(f"  总页数: {total_pages}")
+        print(f"  开始抓取（{args.workers} 线程并发）...")
+        all_data = fetch_all(args.type, config["referer"], total_pages, args.workers)
 
     # 合并去重
     all_data, added = merge_data(existing_data, all_data)
     if existing_data:
         print(f"  新增 {added} 条")
+
+    # 应用数据修正（源数据的已知错误，见 scripts/data_patches.json）
+    all_data = apply_patches(all_data, args.type)
 
     save_data(output_file, all_data)
     print_summary(all_data)

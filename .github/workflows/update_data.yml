@@ -24,13 +24,13 @@ jobs:
         run: pip install requests
 
       - name: 爬取排列五数据
-        run: python scripts/fetch_lottery.py --type p5
+        run: python scripts/fetch_lottery.py --type p5 --update
 
-      - name: 爬取排列三数据
-        run: python scripts/fetch_lottery.py --type p3
+      - name: 派生排列三数据
+        run: python scripts/derive_p3.py
 
       - name: 爬取大乐透数据
-        run: python scripts/fetch_dlt.py
+        run: python scripts/fetch_dlt.py --update
 
       - name: 更新 data.js
         run: |

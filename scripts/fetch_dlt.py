@@ -14,7 +14,8 @@ import time
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from lottery_common import data_path, load_existing, merge_data, save_data, print_summary
+from lottery_common import (data_path, fetch_incremental, load_existing, merge_data,
+                            print_summary, save_data)
 
 API_URL = ("https://webapi.sporttery.cn/gateway/lottery/getHistoryPageListV1.qry"
            "?gameNo=85&provinceId=0&pageSize={size}&isVerify=1&pageNo={page}")
@@ -111,20 +112,29 @@ def main():
         if existing_data:
             print(f"已有数据: {len(existing_data)} 条")
 
-    # 首页用于探测总页数
-    first = fetch_page(1)
-    if not first:
-        print("首页抓取失败，退出")
-        return
+    if existing_data:
+        # 增量：从最新页开始，追平已有数据即停止（通常 1-2 页）
+        known = {item["issue_no"] for item in existing_data}
+        print("  增量抓取（最新页起，追平后停止）...")
+        all_data, caught_up = fetch_incremental(
+            lambda page: [parse_row(r) for r in (fetch_page(page).get("list") or [])], known)
+        if not caught_up:
+            print("  警告: 达到页数上限仍未追平，请改用全量抓取（不带 --update）")
+    else:
+        # 全量：首页探测总页数后并发抓取
+        first = fetch_page(1)
+        if not first:
+            print("首页抓取失败，退出")
+            return
 
-    total_pages = first.get("pages") or 1
-    print(f"  总期数: {first.get('total')}，总页数: {total_pages}")
+        total_pages = first.get("pages") or 1
+        print(f"  总期数: {first.get('total')}，总页数: {total_pages}")
 
-    rows = list(first.get("list") or [])
-    print(f"  开始抓取（{args.workers} 线程并发）...")
-    rows.extend(fetch_all(total_pages, args.workers))
+        rows = list(first.get("list") or [])
+        print(f"  开始抓取（{args.workers} 线程并发）...")
+        rows.extend(fetch_all(total_pages, args.workers))
 
-    all_data = [parse_row(row) for row in rows]
+        all_data = [parse_row(row) for row in rows]
 
     # 合并去重
     all_data, added = merge_data(existing_data, all_data)
