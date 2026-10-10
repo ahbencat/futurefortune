@@ -108,11 +108,8 @@ th, td {
 }
 
 th {
-    background: #f8f9fa;
     font-weight: 600;
     color: #555;
-    position: sticky;
-    top: 0;
 }
 
 tr:hover {
