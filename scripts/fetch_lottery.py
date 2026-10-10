@@ -11,14 +11,14 @@
 """
 
 import argparse
-import json
-import os
 import re
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
+
+from lottery_common import data_path, load_existing, merge_data, save_data, print_summary
 
 BASE_URL = "https://www.js-lottery.com/Lottery/_ListData"
 
@@ -153,8 +153,7 @@ def main():
     args = parser.parse_args()
 
     config = LOTTERY_CONFIG[args.type]
-    # 输出文件与脚本保持仓库根目录相对路径兼容
-    output_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), config["output"])
+    output_file = data_path(config["output"])
 
     print(f"=== {config['name']} 数据抓取 ===")
     print(f"类型: {args.type}")
@@ -162,10 +161,10 @@ def main():
 
     # 增量更新：加载已有数据
     existing_data = []
-    if args.update and os.path.exists(output_file):
-        with open(output_file, "r", encoding="utf-8") as f:
-            existing_data = json.load(f)
-        print(f"已有数据: {len(existing_data)} 条")
+    if args.update:
+        existing_data = load_existing(output_file)
+        if existing_data:
+            print(f"已有数据: {len(existing_data)} 条")
 
     # 探测总页数
     if args.pages:
@@ -180,22 +179,12 @@ def main():
     all_data = fetch_all(args.type, config["referer"], total_pages, args.workers)
 
     # 合并去重
+    all_data, added = merge_data(existing_data, all_data)
     if existing_data:
-        existing_issues = {item["issue_no"] for item in existing_data}
-        new_items = [item for item in all_data if item["issue_no"] not in existing_issues]
-        merged = existing_data + new_items
-        merged.sort(key=lambda x: int(x["issue_no"]))
-        all_data = merged
-        print(f"  新增 {len(new_items)} 条")
+        print(f"  新增 {added} 条")
 
-    # 保存
-    with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(all_data, f, ensure_ascii=False, indent=2)
-
-    print(f"\n完成! 共 {len(all_data)} 条")
-    if all_data:
-        print(f"期号范围: {all_data[0]['issue_no']} - {all_data[-1]['issue_no']}")
-        print(f"日期范围: {all_data[0]['date']} - {all_data[-1]['date']}")
+    save_data(output_file, all_data)
+    print_summary(all_data)
 
 
 if __name__ == "__main__":
