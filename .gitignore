@@ -25,6 +25,10 @@ Thumbs.db
 *.tmp
 *.bak
 *.log
+temp/
 
 # 归档文件（不推送）
 archive/
+
+# 本地指导文件（不推送）
+CLAUDE.md
