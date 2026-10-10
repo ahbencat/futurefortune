@@ -64,6 +64,7 @@ function searchData() {
     } else {
         filteredData = [...LOTTERY_DATA];
     }
+    filteredData.sort((a, b) => parseInt(b.issue_no) - parseInt(a.issue_no));
     currentPage = 1;
     renderTable();
 }
@@ -76,6 +77,7 @@ function filterByYear() {
     } else {
         filteredData = [...LOTTERY_DATA];
     }
+    filteredData.sort((a, b) => parseInt(b.issue_no) - parseInt(a.issue_no));
     currentPage = 1;
     renderTable();
 }
