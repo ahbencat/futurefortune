@@ -35,7 +35,11 @@ function renderTable() {
         const nums = item.numbers.map(n => parseInt(n));
         const sum = nums.reduce((a, b) => a + b, 0);
         const span = Math.max(...nums) - Math.min(...nums);
-        const balls = nums.map(n => `<span class="num-ball">${n}</span>`).join('');
+        // 前三位用 pl3-ball 凸显（排列3数据），后两位用 num-ball
+        const balls = nums.map((n, i) => {
+            const cls = i < 3 ? 'pl3-ball' : 'num-ball';
+            return `<span class="${cls}">${n}</span>`;
+        }).join('');
         
         return `<tr>
             <td>${item.issue_no}</td>
@@ -103,6 +107,13 @@ function nextPage() {
         currentPage++;
         renderTable();
     }
+}
+
+// 跳转到最后10页
+function jumpToLast10() {
+    const totalPages = Math.ceil(filteredData.length / pageSize);
+    currentPage = Math.max(1, totalPages - 9);
+    renderTable();
 }
 
 // 渲染图表

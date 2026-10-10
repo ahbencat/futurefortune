@@ -138,6 +138,24 @@ tr:hover {
 .num-ball:nth-child(4) { background: #43e97b; }
 .num-ball:nth-child(5) { background: #fa709a; }
 
+/* 排列3数据凸显样式 */
+.pl3-ball {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 50%;
+    background: #ff6b6b;
+    color: white;
+    font-weight: bold;
+    margin: 0 3px;
+    border: 3px solid #c0392b;
+    box-shadow: 0 0 8px rgba(255, 107, 107, 0.6);
+}
+
+.pl3-ball:nth-child(2) { background: #f39c12; border-color: #d35400; box-shadow: 0 0 8px rgba(243, 156, 18, 0.6); }
+.pl3-ball:nth-child(3) { background: #2ecc71; border-color: #27ae60; box-shadow: 0 0 8px rgba(46, 204, 113, 0.6); }
+
 .pagination {
     display: flex;
     justify-content: center;
