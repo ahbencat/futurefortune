@@ -109,10 +109,16 @@ function nextPage() {
     }
 }
 
-// 跳转到最后10页
-function jumpToLast10() {
+// 往后跳转10页
+function jumpForward10() {
     const totalPages = Math.ceil(filteredData.length / pageSize);
-    currentPage = Math.max(1, totalPages - 9);
+    currentPage = Math.min(totalPages, currentPage + 10);
+    renderTable();
+}
+
+// 往前跳转10页
+function jumpBack10() {
+    currentPage = Math.max(1, currentPage - 10);
     renderTable();
 }
 
