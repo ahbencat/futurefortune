@@ -1,0 +1,8 @@
+{
+  "errorCode": "P0001",
+  "errorMessage": "参数不合法",
+  "value": null,
+  "emptyFlag": false,
+  "dataFrom": null,
+  "success": false
+}

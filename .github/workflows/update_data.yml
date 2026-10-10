@@ -1,0 +1,67 @@
+name: 更新彩票数据
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 每天凌晨2点执行
+  workflow_dispatch:      # 支持手动触发
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 安装依赖
+        run: pip install requests
+
+      - name: 爬取排列五数据
+        run: python scripts/fetch_lottery.py --type p5
+
+      - name: 爬取排列三数据
+        run: python scripts/fetch_lottery.py --type p3
+
+      - name: 更新 data.js
+        run: |
+          python3 -c "
+          import json
+
+          # 排列五数据
+          with open('pl5_all_data.json', 'r', encoding='utf-8') as f:
+              p5_data = json.load(f)
+
+          # 排列三数据
+          with open('pl3_all_data.json', 'r', encoding='utf-8') as f:
+              p3_data = json.load(f)
+
+          # 生成排列五 data.js
+          with open('docs/data.js', 'w', encoding='utf-8') as f:
+              f.write('const LOTTERY_DATA = ')
+              json.dump(p5_data, f, ensure_ascii=False, separators=(',', ':'))
+              f.write(';\n')
+
+          # 生成排列三 data.js
+          with open('docs/data_p3.js', 'w', encoding='utf-8') as f:
+              f.write('const LOTTERY_DATA_P3 = ')
+              json.dump(p3_data, f, ensure_ascii=False, separators=(',', ':'))
+              f.write(';\n')
+
+          print(f'排列五: {len(p5_data)} 条')
+          print(f'排列三: {len(p3_data)} 条')
+          "
+
+      - name: 提交并推送
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pl3_all_data.json pl5_all_data.json docs/data.js docs/data_p3.js
+          git diff --staged --quiet || git commit -m "更新彩票数据 $(date +%Y-%m-%d)"
+          git push
