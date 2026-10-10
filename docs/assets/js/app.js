@@ -35,9 +35,9 @@ function renderTable() {
         const nums = item.numbers.map(n => parseInt(n));
         const sum = nums.reduce((a, b) => a + b, 0);
         const span = Math.max(...nums) - Math.min(...nums);
-        // 前三位用 pl3-ball（排列3数据），后两位用 pl5-ball
-        const pl3Balls = nums.slice(0, 3).map(n => `<span class="pl3-ball">${n}</span>`).join('');
-        const pl5Balls = nums.slice(3).map(n => `<span class="pl5-ball">${n}</span>`).join('');
+        // 前三位用 pl3-ball（排列3数据），后两位用 pl5-ball；颜色按数字（n0-n9）统一配色，与位置无关
+        const pl3Balls = nums.slice(0, 3).map(n => `<span class="pl3-ball n${n}">${n}</span>`).join('');
+        const pl5Balls = nums.slice(3).map(n => `<span class="pl5-ball n${n}">${n}</span>`).join('');
         
         return `<tr>
             <td>${item.issue_no}</td>
