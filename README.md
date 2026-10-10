@@ -1,8 +1,10 @@
-# FutureFortune
+# 将来会有钱的 (FutureFortune)
 
 > 研究历史数据，期待未来财富。
 
 中国彩票历史数据可视化平台，目前包含排列三和排列五，后续将增加更多彩种。
+
+**[在线预览](https://ahbencat.github.io/futurefortune/)**
 
 ## 数据概览
 

@@ -1,7 +1,7 @@
 // 全局状态
 let currentPage = 1;
 let pageSize = 50;
-let filteredData = [...LOTTERY_DATA];
+let filteredData = [...LOTTERY_DATA].sort((a, b) => parseInt(b.issue_no) - parseInt(a.issue_no));
 let charts = {};
 
 // 初始化
