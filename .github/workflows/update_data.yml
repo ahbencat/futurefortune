@@ -72,11 +72,54 @@ jobs:
           print(f'大乐透: {len(dlt_data)} 条')
           "
 
+      - name: 更新 README 数据概览
+        run: |
+          python3 -c "
+          import json
+
+          with open('datas/pl5_all_data.json', 'r', encoding='utf-8') as f:
+              p5 = json.load(f)
+          with open('datas/pl3_all_data.json', 'r', encoding='utf-8') as f:
+              p3 = json.load(f)
+          with open('datas/dlt_all_data.json', 'r', encoding='utf-8') as f:
+              dlt = json.load(f)
+
+          def stats(data):
+              first, last = data[0], data[-1]
+              return first['issue_no'], first['date'], last['issue_no'], last['date'], len(data)
+
+          p3s, p3sd, p3e, p3ed, p3c = stats(p3)
+          p5s, p5sd, p5e, p5ed, p5c = stats(p5)
+          ds, dsd, de, ded, dc = stats(dlt)
+
+          table = (
+              '| 项目 | 排列三 | 排列五 | 超级大乐透 |\n'
+              '|------|--------|--------|-----------|\n'
+              f'| 起始期号 | {p3s} ({p3sd}) | {p5s} ({p5sd}) | {ds} ({dsd}) |\n'
+              f'| 最新期号 | {p3e} ({p3ed}) | {p5e} ({p5ed}) | {de} ({ded}) |\n'
+              f'| 总期数 | {p3c:,} | {p5c:,} | {dc:,} |\n'
+              '| 数据来源 | 公开开奖数据 | 公开开奖数据 | 公开开奖数据 |'
+          )
+
+          with open('README.md', 'r', encoding='utf-8') as f:
+              content = f.read()
+
+          start = content.index('## 数据概览')
+          end = content.index('## ', start + 10)
+          content = content[:start] + '## 数据概览\n\n' + table + '\n\n' + content[end:]
+
+          with open('README.md', 'w', encoding='utf-8') as f:
+              f.write(content)
+
+          print(f'排列三: {p3c} 条 | 排列五: {p5c} 条 | 大乐透: {dc} 条')
+          "
+
       - name: 提交并推送
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add datas/pl3_all_data.json datas/pl5_all_data.json datas/dlt_all_data.json \
-            docs/assets/data/data.js docs/assets/data/data_p3.js docs/assets/data/data_dlt.js
+            docs/assets/data/data.js docs/assets/data/data_p3.js docs/assets/data/data_dlt.js \
+            README.md
           git diff --staged --quiet || git commit -m "更新彩票数据 $(date +%Y-%m-%d)"
           git push
