@@ -35,7 +35,7 @@ function renderTable() {
         const nums = item.numbers.map(n => parseInt(n));
         const sum = nums.reduce((a, b) => a + b, 0);
         const span = Math.max(...nums) - Math.min(...nums);
-        // 前三位用 pl3-ball（排列3数据），后两位用 num-ball
+        // 前三位用 pl3-ball（排列3数据），后两位用 pl5-ball
         const pl3Balls = nums.slice(0, 3).map(n => `<span class="pl3-ball">${n}</span>`).join('');
         const pl5Balls = nums.slice(3).map(n => `<span class="pl5-ball">${n}</span>`).join('');
         
@@ -43,7 +43,7 @@ function renderTable() {
             <td>${item.issue_no}</td>
             <td>${item.date}</td>
             <td colspan="3" class="pl3-cell"><div class="pl3-group">${pl3Balls}</div></td>
-            <td colspan="2"><div class="pl5-group">${pl5Balls}</div></td>
+            <td colspan="2" class="pl5-cell"><div class="pl5-group">${pl5Balls}</div></td>
             <td>${sum}</td>
             <td>${span}</td>
         </tr>`;
