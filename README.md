@@ -83,6 +83,9 @@ GitHub Actions 每天凌晨自动运行：
 5. 生成 `docs/assets/data/` 下的 `data.js`、`data_p3.js`、`data_dlt.js`
 6. 自动 commit & push
 
+> ⏰ 定时任务设定为每日 **02:00 UTC（北京时间 10:00）**。受 GitHub Actions 负载影响，实际触发时间**可能延迟数小时**。
+> 抓取采用增量方式且幂等，延迟不会造成数据丢失，恢复运行后会自动追平最新开奖。
+
 ## 本地预览
 
 ```bash
