@@ -422,6 +422,90 @@ tr:hover {
     grid-template-columns: 1fr;
 }
 
+/* 7星彩：6位号码球 + 特别号 */
+.qxc-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.qxc-ball {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    font-size: 13px;
+    transition: transform 0.2s;
+}
+
+.qxc-ball:hover {
+    transform: scale(1.1);
+}
+
+.qxc-ball.n0 { background: linear-gradient(135deg, #667eea, #5a6fd6); box-shadow: 0 2px 6px rgba(90, 111, 214, 0.4); }
+.qxc-ball.n1 { background: linear-gradient(135deg, #f093fb, #d97ee8); box-shadow: 0 2px 6px rgba(217, 126, 232, 0.4); }
+.qxc-ball.n2 { background: linear-gradient(135deg, #4facfe, #3d97e8); box-shadow: 0 2px 6px rgba(61, 151, 232, 0.4); }
+.qxc-ball.n3 { background: linear-gradient(135deg, #43e97b, #35c765); box-shadow: 0 2px 6px rgba(53, 199, 101, 0.4); }
+.qxc-ball.n4 { background: linear-gradient(135deg, #fa709a, #e85a85); box-shadow: 0 2px 6px rgba(232, 90, 133, 0.4); }
+.qxc-ball.n5 { background: linear-gradient(135deg, #ff6b6b, #ee5a5a); box-shadow: 0 2px 6px rgba(238, 90, 90, 0.4); }
+.qxc-ball.n6 { background: linear-gradient(135deg, #f39c12, #d68910); box-shadow: 0 2px 6px rgba(214, 137, 16, 0.4); }
+.qxc-ball.n7 { background: linear-gradient(135deg, #9b59b6, #884ea0); box-shadow: 0 2px 6px rgba(136, 78, 160, 0.4); }
+.qxc-ball.n8 { background: linear-gradient(135deg, #3498db, #2e86c1); box-shadow: 0 2px 6px rgba(46, 134, 193, 0.4); }
+.qxc-ball.n9 { background: linear-gradient(135deg, #00cec9, #00b894); box-shadow: 0 2px 6px rgba(0, 184, 148, 0.4); }
+
+/* 特别号（0-14，可两位数，略宽） */
+.qxc-special-ball {
+    display: inline-block;
+    min-width: 32px;
+    height: 28px;
+    line-height: 28px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #f39c12, #d68910);
+    box-shadow: 0 2px 6px rgba(214, 137, 16, 0.4);
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 0 4px;
+    transition: transform 0.2s;
+}
+
+.qxc-special-ball:hover {
+    transform: scale(1.1);
+}
+
+.qxc-plus {
+    color: #999;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0 2px;
+}
+
+.qxc-front-cell {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.08), rgba(200, 230, 255, 0.03));
+    border: 2px solid rgba(52, 152, 219, 0.35);
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.12);
+}
+
+.qxc-special-cell {
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.08), rgba(255, 220, 150, 0.03));
+    border: 2px solid rgba(243, 156, 18, 0.35);
+    border-radius: 20px;
+}
+
+.qxc-front-header {
+    color: #3498db;
+    font-weight: bold;
+}
+
+.qxc-special-header {
+    color: #f39c12;
+    font-weight: bold;
+}
+
 @media (max-width: 768px) {
     .chart-row {
         grid-template-columns: 1fr;

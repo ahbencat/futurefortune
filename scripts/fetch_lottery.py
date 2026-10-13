@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
-排列3/排列5 历史数据抓取脚本
+排列3/排列5/7星彩 历史数据抓取脚本
 数据源：江苏体彩网 https://www.js-lottery.com
 
 用法:
     python scripts/fetch_lottery.py --type p3          # 抓取排列3
     python scripts/fetch_lottery.py --type p5          # 抓取排列5
-    python scripts/fetch_lottery.py --type p3 --update # 增量更新排列3
+    python scripts/fetch_lottery.py --type qxc         # 抓取7星彩
     python scripts/fetch_lottery.py --type p5 --update # 增量更新排列5
+    python scripts/fetch_lottery.py --type qxc --update # 增量更新7星彩
 """
 
 import argparse
@@ -33,12 +34,19 @@ LOTTERY_CONFIG = {
         "output": "pl5_all_data.json",
         "digits": 5,
     },
+    "qxc": {
+        "name": "7星彩",
+        "item_type": "s7",
+        "referer": "https://www.js-lottery.com/wfzq/sevenstar/data",
+        "output": "qxc_all_data.json",
+        "digits": 7,
+    },
 }
 
 
 def main():
     parser = argparse.ArgumentParser(description="排列3/排列5 历史数据抓取")
-    parser.add_argument("--type", required=True, choices=["p3", "p5"], help="彩票类型")
+    parser.add_argument("--type", required=True, choices=["p3", "p5", "qxc"], help="彩票类型")
     parser.add_argument("--update", action="store_true", help="增量更新模式")
     parser.add_argument("--pages", type=int, default=None, help="指定总页数（跳过探测）")
     parser.add_argument("--workers", type=int, default=10, help="并发线程数")

@@ -13,6 +13,7 @@
         <div class="lottery-switch">
             <button class="switch-btn active" data-lottery="pl5" onclick="setLottery('pl5')">排列五(含排列三)</button>
             <button class="switch-btn" data-lottery="dlt" onclick="setLottery('dlt')">超级大乐透</button>
+            <button class="switch-btn" data-lottery="qxc" onclick="setLottery('qxc')">7星彩</button>
         </div>
 
         <header>
@@ -70,6 +71,23 @@
                     </tr>
                 </thead>
                 <tbody id="dltTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- 7星彩数据表格 -->
+        <div class="table-container" id="qxcTableContainer" hidden>
+            <table id="qxcTable">
+                <thead>
+                    <tr>
+                        <th>期号</th>
+                        <th>日期</th>
+                        <th colspan="6" class="qxc-front-header">6位号码</th>
+                        <th class="qxc-special-header">特别号</th>
+                        <th>和值</th>
+                        <th>跨度</th>
+                    </tr>
+                </thead>
+                <tbody id="qxcTableBody"></tbody>
             </table>
         </div>
 
@@ -136,6 +154,33 @@
             </div>
         </div>
 
+        <!-- 7星彩统计图表 -->
+        <div class="charts-section" id="chartsQxc" hidden>
+            <h2>统计分析</h2>
+
+            <div class="chart-row">
+                <div class="chart-box">
+                    <h3>各位号码频率统计（0-9）</h3>
+                    <canvas id="qxcFreqChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>和值分布（前6位）</h3>
+                    <canvas id="qxcSumChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-row">
+                <div class="chart-box">
+                    <h3>跨度分布（前6位）</h3>
+                    <canvas id="qxcSpanChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>特别号频率统计（0-14）</h3>
+                    <canvas id="qxcSpecialFreqChart"></canvas>
+                </div>
+            </div>
+        </div>
+
         <!-- 遗漏值 -->
         <div class="omit-section">
             <h2 id="omitTitle">当前遗漏值（距离上次开出期数）</h2>
@@ -146,6 +191,7 @@
     <script src="assets/data/data.js"></script>
     <script src="assets/data/data_p3.js"></script>
     <script src="assets/data/data_dlt.js"></script>
+    <script src="assets/data/data_qxc.js"></script>
     <script src="assets/js/app.js"></script>
 </body>
 </html>

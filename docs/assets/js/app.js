@@ -8,13 +8,17 @@ let charts = {};
 // 彩种元信息
 const LOTTERY_META = {
     pl5: { title: '排列五(含排列三)历史数据' },
-    dlt: { title: '超级大乐透历史数据' }
+    dlt: { title: '超级大乐透历史数据' },
+    qxc: { title: '7星彩历史数据' }
 };
 
 // 当前彩种的数据集
 function activeData() {
     if (activeLottery === 'dlt') {
         return typeof LOTTERY_DATA_DLT !== 'undefined' ? LOTTERY_DATA_DLT : [];
+    }
+    if (activeLottery === 'qxc') {
+        return typeof LOTTERY_DATA_QXC !== 'undefined' ? LOTTERY_DATA_QXC : [];
     }
     return LOTTERY_DATA;
 }
@@ -65,14 +69,19 @@ function updateHeader() {
 // 切换表格与图表的显示
 function toggleSections() {
     const isDlt = activeLottery === 'dlt';
+    const isQxc = activeLottery === 'qxc';
+    document.getElementById('pl5TableContainer').hidden = isDlt || isQxc;
     document.getElementById('dltTableContainer').hidden = !isDlt;
-    document.getElementById('pl5TableContainer').hidden = isDlt;
+    document.getElementById('qxcTableContainer').hidden = !isQxc;
+    document.getElementById('chartsPl5').hidden = isDlt || isQxc;
     document.getElementById('chartsDlt').hidden = !isDlt;
-    document.getElementById('chartsPl5').hidden = isDlt;
-    document.getElementById('omitTitle').textContent = isDlt
-        ? '当前遗漏值（前区 01-35 / 后区 01-12）'
-        : '当前遗漏值（距离上次开出期数）';
-    document.getElementById('omitGrid').classList.toggle('wide', isDlt);
+    document.getElementById('chartsQxc').hidden = !isQxc;
+
+    const omitTitle = document.getElementById('omitTitle');
+    if (isDlt) omitTitle.textContent = '当前遗漏值（前区 01-35 / 后区 01-12）';
+    else if (isQxc) omitTitle.textContent = '当前遗漏值（前6位 0-9 / 特别号 0-14）';
+    else omitTitle.textContent = '当前遗漏值（距离上次开出期数）';
+    document.getElementById('omitGrid').classList.toggle('wide', isDlt || isQxc);
 }
 
 // 初始化年份筛选
@@ -92,6 +101,8 @@ function initYearFilter() {
 function renderTable() {
     if (activeLottery === 'dlt') {
         renderDltTable();
+    } else if (activeLottery === 'qxc') {
+        renderQxcTable();
     } else {
         renderPl5Table();
     }
@@ -167,6 +178,32 @@ function renderDltTable() {
             <td>${item.date}</td>
             <td colspan="5" class="dlt-front-cell"><div class="dlt-group">${frontBalls}</div></td>
             <td colspan="2" class="dlt-back-cell"><div class="dlt-group">${backBalls}</div></td>
+            <td>${sum}</td>
+            <td>${span}</td>
+        </tr>`;
+    }).join('');
+}
+
+// 渲染7星彩表格（6位号码 + 特别号）
+function renderQxcTable() {
+    const tbody = document.getElementById('qxcTableBody');
+
+    tbody.innerHTML = currentPageData().map(item => {
+        const nums = item.numbers.map(n => parseInt(n));
+        const front = nums.slice(0, 6);
+        const special = nums[6];
+        const sum = front.reduce((a, b) => a + b, 0);
+        const span = Math.max(...front) - Math.min(...front);
+
+        // 颜色按数字（n0-n9）统一配色
+        const frontBalls = front.map(n => `<span class="qxc-ball n${n}">${n}</span>`).join('');
+        const specialBall = `<span class="qxc-special-ball">${special}</span>`;
+
+        return `<tr>
+            <td>${item.issue_no}</td>
+            <td>${item.date}</td>
+            <td colspan="6" class="qxc-front-cell"><div class="qxc-group">${frontBalls}</div></td>
+            <td class="qxc-special-cell"><div class="qxc-group"><span class="qxc-plus">+</span>${specialBall}</div></td>
             <td>${sum}</td>
             <td>${span}</td>
         </tr>`;
@@ -251,6 +288,11 @@ function renderCharts() {
         renderDltSumChart();
         renderDltSpanChart();
         renderDltBackFreqChart();
+    } else if (activeLottery === 'qxc') {
+        renderQxcFreqChart();
+        renderQxcSumChart();
+        renderQxcSpanChart();
+        renderQxcSpecialFreqChart();
     } else {
         renderFreqChart();
         renderSumChart();
@@ -474,6 +516,8 @@ function omitBallsHtml(omitValues, numbers, format) {
 function renderOmitValues() {
     if (activeLottery === 'dlt') {
         renderDltOmitValues();
+    } else if (activeLottery === 'qxc') {
+        renderQxcOmitValues();
     } else {
         renderPl5OmitValues();
     }
@@ -643,4 +687,159 @@ function renderDltBackFreqChart() {
             scales: { y: { beginAtZero: true } }
         }
     });
+}
+
+// ===== 7星彩图表 =====
+
+// 各位号码频率统计（6位，0-9）
+function renderQxcFreqChart() {
+    const ctx = document.getElementById('qxcFreqChart').getContext('2d');
+    const positions = ['第1位', '第2位', '第3位', '第4位', '第5位', '第6位'];
+    const colors = ['#667eea', '#f093fb', '#4facfe', '#43e97b', '#fa709a', '#ff6b6b'];
+    const datasets = [];
+
+    for (let pos = 0; pos < 6; pos++) {
+        const freq = Array(10).fill(0);
+        activeData().forEach(item => {
+            freq[parseInt(item.numbers[pos])]++;
+        });
+        datasets.push({
+            label: positions[pos],
+            data: freq,
+            backgroundColor: colors[pos] + '80',
+            borderColor: colors[pos],
+            borderWidth: 1
+        });
+    }
+
+    charts.qxcFreq = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// 和值分布（前6位）
+function renderQxcSumChart() {
+    const ctx = document.getElementById('qxcSumChart').getContext('2d');
+    const sumFreq = {};
+
+    activeData().forEach(item => {
+        const sum = item.numbers.slice(0, 6).reduce((a, b) => a + parseInt(b), 0);
+        sumFreq[sum] = (sumFreq[sum] || 0) + 1;
+    });
+
+    const labels = Object.keys(sumFreq).sort((a, b) => a - b);
+
+    charts.qxcSum = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '期数',
+                data: labels.map(l => sumFreq[l]),
+                backgroundColor: '#667eea80',
+                borderColor: '#667eea',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// 跨度分布（前6位）
+function renderQxcSpanChart() {
+    const ctx = document.getElementById('qxcSpanChart').getContext('2d');
+    const spanFreq = {};
+
+    activeData().forEach(item => {
+        const nums = item.numbers.slice(0, 6).map(n => parseInt(n));
+        const span = Math.max(...nums) - Math.min(...nums);
+        spanFreq[span] = (spanFreq[span] || 0) + 1;
+    });
+
+    const labels = Object.keys(spanFreq).sort((a, b) => a - b);
+
+    charts.qxcSpan = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '期数',
+                data: labels.map(l => spanFreq[l]),
+                backgroundColor: '#43e97b80',
+                borderColor: '#43e97b',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// 特别号频率统计（0-14）
+function renderQxcSpecialFreqChart() {
+    const ctx = document.getElementById('qxcSpecialFreqChart').getContext('2d');
+    const numbers = Array.from({ length: 15 }, (_, i) => i);
+    const freq = {};
+    numbers.forEach(n => { freq[n] = 0; });
+
+    activeData().forEach(item => {
+        freq[parseInt(item.numbers[6])]++;
+    });
+
+    charts.qxcSpecialFreq = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: numbers.map(String),
+            datasets: [{
+                label: '出现期数',
+                data: numbers.map(n => freq[n]),
+                backgroundColor: '#f39c1280',
+                borderColor: '#f39c12',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// 7星彩遗漏值（前6位 0-9 / 特别号 0-14）
+function renderQxcOmitValues() {
+    const grid = document.getElementById('omitGrid');
+    const data = activeData();
+    const digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const specials = Array.from({ length: 15 }, (_, i) => i);
+    const positions = ['第1位', '第2位', '第3位', '第4位', '第5位', '第6位'];
+
+    let html = '';
+    for (let pos = 0; pos < 6; pos++) {
+        const omitValues = calcOmitValues(data, digits, item => [parseInt(item.numbers[pos])]);
+        html += `<div class="omit-position">
+            <h4>${positions[pos]}</h4>
+            <div class="omit-balls">${omitBallsHtml(omitValues, digits)}</div>
+        </div>`;
+    }
+
+    const specialOmit = calcOmitValues(data, specials, item => [parseInt(item.numbers[6])]);
+    html += `<div class="omit-position">
+        <h4>特别号 (0-14)</h4>
+        <div class="omit-balls">${omitBallsHtml(specialOmit, specials)}</div>
+    </div>`;
+
+    grid.innerHTML = html;
 }
