@@ -2,7 +2,7 @@
 
 > 研究历史数据，期待未来财富。
 
-中国彩票历史数据整理及可视化平台，目前包含排列三、排列五、超级大乐透和7星彩，后续将增加更多彩种。
+中国彩票历史数据整理及可视化平台，目前包含排列三、排列五、超级大乐透、7星彩和双色球，后续将增加更多彩种。
 
 [![在线预览](https://img.shields.io/badge/在线预览-🌐_GitHub_Pages-blue?style=for-the-badge)](https://ahbencat.github.io/futurefortune/)
 
@@ -14,12 +14,13 @@
 | 🎲 **排列五** | 04009 <sub>2004-11-26</sub> | **26271** <sub>2026-10-12</sub> | **7,738** |
 | 🎯 **超级大乐透** | 07001 <sub>2007-05-30</sub> | **26116** <sub>2026-10-12</sub> | **2,934** |
 | ⭐ **7星彩** | 21008 <sub>2021-01-17</sub> | **26117** <sub>2026-10-13</sub> | **864** |
+| 🔴 **双色球** | 2003001 <sub>2003-02-23</sub> | **2026117** <sub>2026-10-13</sub> | **3,514** |
 
 > 数据来源：公开开奖数据 · 每日自动更新
 
 ## 功能
 
-- [x] 彩种切换（排列五 / 超级大乐透 / 7星彩）
+- [x] 彩种切换（排列五 / 超级大乐透 / 7星彩 / 双色球）
 - [x] 全部历史数据表格展示（分页）
 - [x] 按期号搜索、按年份筛选
 - [x] 号码频率统计
@@ -35,7 +36,7 @@
 - [x] 排列五（5位数）
 - [x] 超级大乐透（前区5个 01-35 + 后区2个 01-12）
 - [x] 7星彩（前6位 0-9 + 特别号 0-14）
-- [ ] 双色球（待添加）
+- [x] 双色球（红球 6个 01-33 + 蓝球 1个 01-16）
 - [ ] 其他彩种（规划中）
 
 ## 技术栈
@@ -60,7 +61,8 @@
 │           ├── data.js       # 排列五数据
 │           ├── data_p3.js    # 排列三数据
 │           ├── data_dlt.js   # 大乐透数据
-│           └── data_qxc.js   # 7星彩数据
+│           ├── data_qxc.js   # 7星彩数据
+│           └── data_ssq.js   # 双色球数据
 ├── scripts/
 │   ├── lottery_common.py    # 公共函数（读写/合并/修正/摘要）
 │   ├── fetch_lottery.py     # 排列3/排列5/7星彩 抓取（--type p3/p5/qxc）
@@ -71,7 +73,8 @@
 │   ├── pl3_all_data.json     # 排列三
 │   ├── pl5_all_data.json     # 排列五
 │   ├── dlt_all_data.json     # 大乐透
-│   └── qxc_all_data.json     # 7星彩
+│   ├── qxc_all_data.json     # 7星彩
+│   └── ssq_all_data.json     # 双色球
 ├── archive/                 # 历史脚本归档
 ├── .gitignore
 └── README.md
@@ -85,7 +88,7 @@ GitHub Actions 每天凌晨自动运行：
 3. 抓取超级大乐透最新开奖数据
 4. 抓取7星彩最新开奖数据
 5. 应用 `scripts/data_patches.json` 中的数据修正（源数据的日期错误、缺失期号）
-6. 生成 `docs/assets/data/` 下的 `data.js`、`data_p3.js`、`data_dlt.js`、`data_qxc.js`
+6. 生成 `docs/assets/data/` 下的 `data.js`、`data_p3.js`、`data_dlt.js`、`data_qxc.js`、`data_ssq.js`
 7. 自动 commit & push
 
 > ⏰ 定时任务设定为每日 **02:00 UTC（北京时间 10:00）**。受 GitHub Actions 负载影响，实际触发时间**可能延迟数小时**。

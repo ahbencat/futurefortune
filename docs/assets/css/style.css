@@ -506,6 +506,61 @@ tr:hover {
     font-weight: bold;
 }
 
+/* 双色球：红球 / 蓝球 */
+.ssq-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ssq-front-ball,
+.ssq-back-ball {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    transition: transform 0.2s;
+}
+
+.ssq-front-ball:hover,
+.ssq-back-ball:hover {
+    transform: scale(1.1);
+}
+
+.ssq-front-ball {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    box-shadow: 0 2px 6px rgba(238, 90, 36, 0.4);
+}
+
+.ssq-back-ball {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    box-shadow: 0 2px 6px rgba(41, 128, 185, 0.4);
+}
+
+.ssq-front-cell {
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.06), rgba(255, 200, 200, 0.03));
+    border-radius: 20px;
+}
+
+.ssq-back-cell {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.08), rgba(200, 230, 255, 0.03));
+    border-radius: 20px;
+}
+
+.ssq-front-header {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.ssq-back-header {
+    color: #3498db;
+    font-weight: bold;
+}
+
 @media (max-width: 768px) {
     .chart-row {
         grid-template-columns: 1fr;
