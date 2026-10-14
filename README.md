@@ -68,6 +68,7 @@
 │   ├── fetch_lottery.py     # 排列3/排列5/7星彩 抓取（--type p3/p5/qxc）
 │   ├── derive_p3.py         # 排列三派生（取排列五前三位，无需抓取）
 │   ├── fetch_dlt.py         # 大乐透抓取
+│   ├── fetch_ssq.py         # 双色球抓取（500.com datachart）
 │   └── data_patches.json    # 数据修正表（源数据的已知错误/缺失期号）
 ├── datas/                   # 原始数据（抓取结果，单一事实来源）
 │   ├── pl3_all_data.json     # 排列三
@@ -87,9 +88,10 @@ GitHub Actions 每天凌晨自动运行：
 2. 排列三由排列五前三位**派生**（不重复抓取，见 `scripts/derive_p3.py`）
 3. 抓取超级大乐透最新开奖数据
 4. 抓取7星彩最新开奖数据
-5. 应用 `scripts/data_patches.json` 中的数据修正（源数据的日期错误、缺失期号）
-6. 生成 `docs/assets/data/` 下的 `data.js`、`data_p3.js`、`data_dlt.js`、`data_qxc.js`、`data_ssq.js`
-7. 自动 commit & push
+5. 抓取双色球最新开奖数据
+6. 应用 `scripts/data_patches.json` 中的数据修正（源数据的日期错误、缺失期号）
+7. 生成 `docs/assets/data/` 下的 `data.js`、`data_p3.js`、`data_dlt.js`、`data_qxc.js`、`data_ssq.js`
+8. 自动 commit & push
 
 > ⏰ 定时任务设定为每日 **02:00 UTC（北京时间 10:00）**。受 GitHub Actions 负载影响，实际触发时间**可能延迟数小时**。
 > 抓取采用增量方式且幂等，延迟不会造成数据丢失，恢复运行后会自动追平最新开奖。
