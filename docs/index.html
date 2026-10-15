@@ -15,6 +15,7 @@
             <button class="switch-btn" data-lottery="dlt" onclick="setLottery('dlt')">超级大乐透</button>
             <button class="switch-btn" data-lottery="qxc" onclick="setLottery('qxc')">7星彩</button>
             <button class="switch-btn" data-lottery="ssq" onclick="setLottery('ssq')">双色球</button>
+            <button class="switch-btn" data-lottery="fc3d" onclick="setLottery('fc3d')">福彩3D</button>
         </div>
 
         <header>
@@ -226,6 +227,49 @@
             </div>
         </div>
 
+        <!-- 福彩3D数据表格 -->
+        <div class="table-container" id="fc3dTableContainer" hidden>
+            <table id="fc3dTable">
+                <thead>
+                    <tr>
+                        <th>期号</th>
+                        <th>日期</th>
+                        <th colspan="3" class="fc3d-header">号码</th>
+                        <th>和值</th>
+                        <th>跨度</th>
+                    </tr>
+                </thead>
+                <tbody id="fc3dTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- 福彩3D统计图表 -->
+        <div class="charts-section" id="chartsFc3d" hidden>
+            <h2>统计分析</h2>
+
+            <div class="chart-row">
+                <div class="chart-box">
+                    <h3>各位号码频率统计（0-9）</h3>
+                    <canvas id="fc3dFreqChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>和值分布</h3>
+                    <canvas id="fc3dSumChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-row">
+                <div class="chart-box">
+                    <h3>跨度分布</h3>
+                    <canvas id="fc3dSpanChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>奇偶比分布</h3>
+                    <canvas id="fc3dOddEvenChart"></canvas>
+                </div>
+            </div>
+        </div>
+
         <!-- 遗漏值 -->
         <div class="omit-section">
             <h2 id="omitTitle">当前遗漏值（距离上次开出期数）</h2>
@@ -238,6 +282,7 @@
     <script src="assets/data/data_dlt.js"></script>
     <script src="assets/data/data_qxc.js"></script>
     <script src="assets/data/data_ssq.js"></script>
+    <script src="assets/data/data_fc3d.js"></script>
     <script src="assets/js/app.js"></script>
 </body>
 </html>

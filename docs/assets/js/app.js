@@ -10,7 +10,8 @@ const LOTTERY_META = {
     pl5: { title: '排列五(含排列三)历史数据' },
     dlt: { title: '超级大乐透历史数据' },
     qxc: { title: '7星彩历史数据' },
-    ssq: { title: '双色球历史数据' }
+    ssq: { title: '双色球历史数据' },
+    fc3d: { title: '福彩3D历史数据' }
 };
 
 // 当前彩种的数据集
@@ -23,6 +24,9 @@ function activeData() {
     }
     if (activeLottery === 'ssq') {
         return typeof LOTTERY_DATA_SSQ !== 'undefined' ? LOTTERY_DATA_SSQ : [];
+    }
+    if (activeLottery === 'fc3d') {
+        return typeof LOTTERY_DATA_FC3D !== 'undefined' ? LOTTERY_DATA_FC3D : [];
     }
     return LOTTERY_DATA;
 }
@@ -75,21 +79,25 @@ function toggleSections() {
     const isDlt = activeLottery === 'dlt';
     const isQxc = activeLottery === 'qxc';
     const isSsq = activeLottery === 'ssq';
-    document.getElementById('pl5TableContainer').hidden = isDlt || isQxc || isSsq;
+    const isFc3d = activeLottery === 'fc3d';
+    document.getElementById('pl5TableContainer').hidden = isDlt || isQxc || isSsq || isFc3d;
     document.getElementById('dltTableContainer').hidden = !isDlt;
     document.getElementById('qxcTableContainer').hidden = !isQxc;
     document.getElementById('ssqTableContainer').hidden = !isSsq;
-    document.getElementById('chartsPl5').hidden = isDlt || isQxc || isSsq;
+    document.getElementById('fc3dTableContainer').hidden = !isFc3d;
+    document.getElementById('chartsPl5').hidden = isDlt || isQxc || isSsq || isFc3d;
     document.getElementById('chartsDlt').hidden = !isDlt;
     document.getElementById('chartsQxc').hidden = !isQxc;
     document.getElementById('chartsSsq').hidden = !isSsq;
+    document.getElementById('chartsFc3d').hidden = !isFc3d;
 
     const omitTitle = document.getElementById('omitTitle');
     if (isDlt) omitTitle.textContent = '当前遗漏值（前区 01-35 / 后区 01-12）';
     else if (isQxc) omitTitle.textContent = '当前遗漏值（前6位 0-9 / 特别号 0-14）';
     else if (isSsq) omitTitle.textContent = '当前遗漏值（红球 01-33 / 蓝球 01-16）';
+    else if (isFc3d) omitTitle.textContent = '当前遗漏值（百位 / 十位 / 个位）';
     else omitTitle.textContent = '当前遗漏值（距离上次开出期数）';
-    document.getElementById('omitGrid').classList.toggle('wide', isDlt || isQxc || isSsq);
+    document.getElementById('omitGrid').classList.toggle('wide', isDlt || isQxc || isSsq || isFc3d);
 }
 
 // 初始化年份筛选
@@ -113,6 +121,8 @@ function renderTable() {
         renderQxcTable();
     } else if (activeLottery === 'ssq') {
         renderSsqTable();
+    } else if (activeLottery === 'fc3d') {
+        renderFc3dTable();
     } else {
         renderPl5Table();
     }
@@ -308,6 +318,11 @@ function renderCharts() {
         renderSsqSumChart();
         renderSsqSpanChart();
         renderSsqBackFreqChart();
+    } else if (activeLottery === 'fc3d') {
+        renderFc3dFreqChart();
+        renderFc3dSumChart();
+        renderFc3dSpanChart();
+        renderFc3dOddEvenChart();
     } else {
         renderFreqChart();
         renderSumChart();
@@ -535,6 +550,8 @@ function renderOmitValues() {
         renderQxcOmitValues();
     } else if (activeLottery === 'ssq') {
         renderSsqOmitValues();
+    } else if (activeLottery === 'fc3d') {
+        renderFc3dOmitValues();
     } else {
         renderPl5OmitValues();
     }
@@ -1030,4 +1047,176 @@ function renderSsqOmitValues() {
             <h4>蓝球 (01-16)</h4>
             <div class="omit-balls">${omitBallsHtml(backOmit, backNumbers, pad2)}</div>
         </div>`;
+}
+
+// ===== 福彩3D =====
+
+// 渲染福彩3D表格
+function renderFc3dTable() {
+    const tbody = document.getElementById('fc3dTableBody');
+    const pageData = currentPageData();
+
+    tbody.innerHTML = pageData.map(item => {
+        const nums = item.numbers.map(n => parseInt(n));
+        const sum = nums.reduce((a, b) => a + b, 0);
+        const span = Math.max(...nums) - Math.min(...nums);
+        const balls = item.numbers.map(n => `<span class="fc3d-ball n${n}">${n}</span>`).join('');
+
+        return `<tr>
+            <td>${item.issue_no}</td>
+            <td>${item.date}</td>
+            <td colspan="3" class="fc3d-cell"><div class="fc3d-group">${balls}</div></td>
+            <td>${sum}</td>
+            <td>${span}</td>
+        </tr>`;
+    }).join('');
+}
+
+// 福彩3D各位号码频率（0-9）
+function renderFc3dFreqChart() {
+    const ctx = document.getElementById('fc3dFreqChart').getContext('2d');
+    const positions = ['百位', '十位', '个位'];
+    const colors = ['#667eea', '#f093fb', '#4facfe'];
+    const datasets = [];
+
+    for (let pos = 0; pos < 3; pos++) {
+        const freq = Array(10).fill(0);
+        activeData().forEach(item => {
+            freq[parseInt(item.numbers[pos])]++;
+        });
+        datasets.push({
+            label: positions[pos],
+            data: freq,
+            backgroundColor: colors[pos] + '80',
+            borderColor: colors[pos],
+            borderWidth: 1
+        });
+    }
+
+    charts.fc3dFreq = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// 福彩3D和值分布
+function renderFc3dSumChart() {
+    const ctx = document.getElementById('fc3dSumChart').getContext('2d');
+    const sumFreq = {};
+
+    activeData().forEach(item => {
+        const sum = item.numbers.reduce((a, b) => +a + +b, 0);
+        sumFreq[sum] = (sumFreq[sum] || 0) + 1;
+    });
+
+    const labels = Object.keys(sumFreq).sort((a, b) => a - b);
+
+    charts.fc3dSum = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '期数',
+                data: labels.map(l => sumFreq[l]),
+                backgroundColor: '#667eea80',
+                borderColor: '#667eea',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// 福彩3D跨度分布
+function renderFc3dSpanChart() {
+    const ctx = document.getElementById('fc3dSpanChart').getContext('2d');
+    const spanFreq = {};
+
+    activeData().forEach(item => {
+        const nums = item.numbers.map(Number);
+        const span = Math.max(...nums) - Math.min(...nums);
+        spanFreq[span] = (spanFreq[span] || 0) + 1;
+    });
+
+    const labels = Object.keys(spanFreq).sort((a, b) => a - b);
+
+    charts.fc3dSpan = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '期数',
+                data: labels.map(l => spanFreq[l]),
+                backgroundColor: '#43e97b80',
+                borderColor: '#43e97b',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// 福彩3D奇偶比分布
+function renderFc3dOddEvenChart() {
+    const ctx = document.getElementById('fc3dOddEvenChart').getContext('2d');
+    const oeFreq = {};
+
+    activeData().forEach(item => {
+        const odd = item.numbers.filter(n => parseInt(n) % 2 === 1).length;
+        const even = 3 - odd;
+        const key = `${odd}奇${even}偶`;
+        oeFreq[key] = (oeFreq[key] || 0) + 1;
+    });
+
+    const labels = Object.keys(oeFreq).sort();
+
+    charts.fc3dOddEven = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '期数',
+                data: labels.map(l => oeFreq[l]),
+                backgroundColor: '#fa709a80',
+                borderColor: '#fa709a',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// 福彩3D遗漏值（百位/十位/个位）
+function renderFc3dOmitValues() {
+    const grid = document.getElementById('omitGrid');
+    const data = activeData();
+    const digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const positions = ['百位', '十位', '个位'];
+
+    let html = '';
+    for (let pos = 0; pos < 3; pos++) {
+        const omitValues = calcOmitValues(data, digits, item => [parseInt(item.numbers[pos])]);
+        html += `<div class="omit-position">
+            <h4>${positions[pos]}</h4>
+            <div class="omit-balls">${omitBallsHtml(omitValues, digits)}</div>
+        </div>`;
+    }
+
+    grid.innerHTML = html;
 }
