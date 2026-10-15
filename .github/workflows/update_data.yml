@@ -38,6 +38,9 @@ jobs:
       - name: 爬取双色球数据
         run: python scripts/fetch_ssq.py --update
 
+      - name: 爬取福彩3D数据
+        run: python scripts/fetch_fc3d.py --update
+
       - name: 更新 data.js
         run: |
           python3 -c "
@@ -62,6 +65,10 @@ jobs:
           # 双色球数据
           with open('datas/ssq_all_data.json', 'r', encoding='utf-8') as f:
               ssq_data = json.load(f)
+
+          # 福彩3D数据
+          with open('datas/fc3d_all_data.json', 'r', encoding='utf-8') as f:
+              fc3d_data = json.load(f)
 
           # 生成排列五 data.js
           with open('docs/assets/data/data.js', 'w', encoding='utf-8') as f:
@@ -93,11 +100,18 @@ jobs:
               json.dump(ssq_data, f, ensure_ascii=False, separators=(',', ':'))
               f.write(';\n')
 
+          # 生成福彩3D data.js
+          with open('docs/assets/data/data_fc3d.js', 'w', encoding='utf-8') as f:
+              f.write('const LOTTERY_DATA_FC3D = ')
+              json.dump(fc3d_data, f, ensure_ascii=False, separators=(',', ':'))
+              f.write(';\n')
+
           print(f'排列五: {len(p5_data)} 条')
           print(f'排列三: {len(p3_data)} 条')
           print(f'大乐透: {len(dlt_data)} 条')
           print(f'7星彩: {len(qxc_data)} 条')
           print(f'双色球: {len(ssq_data)} 条')
+          print(f'福彩3D: {len(fc3d_data)} 条')
           "
 
       - name: 更新 README 数据概览
@@ -115,6 +129,8 @@ jobs:
               qxc = json.load(f)
           with open('datas/ssq_all_data.json', 'r', encoding='utf-8') as f:
               ssq = json.load(f)
+          with open('datas/fc3d_all_data.json', 'r', encoding='utf-8') as f:
+              fc3d = json.load(f)
 
           def stats(data):
               first, last = data[0], data[-1]
@@ -125,6 +141,7 @@ jobs:
           ds, dsd, de, ded, dc = stats(dlt)
           qs, qsd, qe, qed, qc = stats(qxc)
           ss, ssd, se, sed, sc = stats(ssq)
+          fs, fsd, fe, fed, fc = stats(fc3d)
 
           HEADING = '## 📊 数据概览'
 
@@ -139,6 +156,7 @@ jobs:
               row('🎯', '超级大乐透', ds, dsd, de, ded, dc),
               row('⭐', '7星彩', qs, qsd, qe, qed, qc),
               row('🔴', '双色球', ss, ssd, se, sed, sc),
+              row('🎲', '福彩3D', fs, fsd, fe, fed, fc),
           ])
 
           with open('README.md', 'r', encoding='utf-8') as f:
@@ -152,15 +170,15 @@ jobs:
           with open('README.md', 'w', encoding='utf-8') as f:
               f.write(content)
 
-          print(f'排列三: {p3c} 条 | 排列五: {p5c} 条 | 大乐透: {dc} 条 | 7星彩: {qc} 条 | 双色球: {sc} 条')
+          print(f'排列三: {p3c} 条 | 排列五: {p5c} 条 | 大乐透: {dc} 条 | 7星彩: {qc} 条 | 双色球: {sc} 条 | 福彩3D: {fc} 条')
           "
 
       - name: 提交并推送
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add datas/pl3_all_data.json datas/pl5_all_data.json datas/dlt_all_data.json datas/qxc_all_data.json datas/ssq_all_data.json \
-            docs/assets/data/data.js docs/assets/data/data_p3.js docs/assets/data/data_dlt.js docs/assets/data/data_qxc.js docs/assets/data/data_ssq.js \
+          git add datas/pl3_all_data.json datas/pl5_all_data.json datas/dlt_all_data.json datas/qxc_all_data.json datas/ssq_all_data.json datas/fc3d_all_data.json \
+            docs/assets/data/data.js docs/assets/data/data_p3.js docs/assets/data/data_dlt.js docs/assets/data/data_qxc.js docs/assets/data/data_ssq.js docs/assets/data/data_fc3d.js \
             README.md
           git diff --staged --quiet || git commit -m "更新彩票数据 $(date +%Y-%m-%d)"
           git push
