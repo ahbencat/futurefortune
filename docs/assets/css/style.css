@@ -621,6 +621,46 @@ tr:hover {
     font-weight: bold;
 }
 
+/* 快乐8 */
+.kl8-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.kl8-ball {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00cec9, #00b894);
+    box-shadow: 0 2px 6px rgba(0, 184, 148, 0.4);
+    color: white;
+    font-weight: bold;
+    font-size: 11px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.kl8-ball:hover {
+    transform: scale(1.15);
+}
+
+.kl8-cell {
+    background: linear-gradient(135deg, rgba(0, 206, 201, 0.08), rgba(180, 240, 235, 0.03));
+    border: 2px solid rgba(0, 206, 201, 0.35);
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(0, 206, 201, 0.12);
+}
+
+.kl8-header {
+    color: #00cec9;
+    font-weight: bold;
+}
+
 /* 福彩3D */
 .fc3d-group {
     display: inline-flex;

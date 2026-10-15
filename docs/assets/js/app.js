@@ -1,5 +1,5 @@
 // 全局状态
-let activeLottery = 'pl5';   // 'pl5' | 'dlt'
+let activeLottery = 'pl5';   // 'pl5' | 'dlt' | 'qxc' | 'ssq' | 'qlc' | 'kl8' | 'fc3d'
 let currentPage = 1;
 let pageSize = 50;
 let filteredData = [];
@@ -12,6 +12,7 @@ const LOTTERY_META = {
     qxc: { title: '7星彩历史数据' },
     ssq: { title: '双色球历史数据' },
     qlc: { title: '七乐彩历史数据' },
+    kl8: { title: '快乐8历史数据' },
     fc3d: { title: '福彩3D历史数据' }
 };
 
@@ -28,6 +29,9 @@ function activeData() {
     }
     if (activeLottery === 'qlc') {
         return typeof LOTTERY_DATA_QLC !== 'undefined' ? LOTTERY_DATA_QLC : [];
+    }
+    if (activeLottery === 'kl8') {
+        return typeof LOTTERY_DATA_KL8 !== 'undefined' ? LOTTERY_DATA_KL8 : [];
     }
     if (activeLottery === 'fc3d') {
         return typeof LOTTERY_DATA_FC3D !== 'undefined' ? LOTTERY_DATA_FC3D : [];
@@ -84,19 +88,22 @@ function toggleSections() {
     const isQxc = activeLottery === 'qxc';
     const isSsq = activeLottery === 'ssq';
     const isQlc = activeLottery === 'qlc';
+    const isKl8 = activeLottery === 'kl8';
     const isFc3d = activeLottery === 'fc3d';
-    const isOther = isDlt || isQxc || isSsq || isQlc || isFc3d;
+    const isOther = isDlt || isQxc || isSsq || isQlc || isKl8 || isFc3d;
     document.getElementById('pl5TableContainer').hidden = isOther;
     document.getElementById('dltTableContainer').hidden = !isDlt;
     document.getElementById('qxcTableContainer').hidden = !isQxc;
     document.getElementById('ssqTableContainer').hidden = !isSsq;
     document.getElementById('qlcTableContainer').hidden = !isQlc;
+    document.getElementById('kl8TableContainer').hidden = !isKl8;
     document.getElementById('fc3dTableContainer').hidden = !isFc3d;
     document.getElementById('chartsPl5').hidden = isOther;
     document.getElementById('chartsDlt').hidden = !isDlt;
     document.getElementById('chartsQxc').hidden = !isQxc;
     document.getElementById('chartsSsq').hidden = !isSsq;
     document.getElementById('chartsQlc').hidden = !isQlc;
+    document.getElementById('chartsKl8').hidden = !isKl8;
     document.getElementById('chartsFc3d').hidden = !isFc3d;
 
     const omitTitle = document.getElementById('omitTitle');
@@ -104,6 +111,7 @@ function toggleSections() {
     else if (isQxc) omitTitle.textContent = '当前遗漏值（前6位 0-9 / 特别号 0-14）';
     else if (isSsq) omitTitle.textContent = '当前遗漏值（红球 01-33 / 蓝球 01-16）';
     else if (isQlc) omitTitle.textContent = '当前遗漏值（正选 01-30 / 特选 01-30）';
+    else if (isKl8) omitTitle.textContent = '当前遗漏值（01-80）';
     else if (isFc3d) omitTitle.textContent = '当前遗漏值（百位 / 十位 / 个位）';
     else omitTitle.textContent = '当前遗漏值（距离上次开出期数）';
     document.getElementById('omitGrid').classList.toggle('wide', isOther);
@@ -134,6 +142,8 @@ function renderTable() {
         renderSsqTable();
     } else if (activeLottery === 'qlc') {
         renderQlcTable();
+    } else if (activeLottery === 'kl8') {
+        renderKl8Table();
     } else if (activeLottery === 'fc3d') {
         renderFc3dTable();
     } else {
@@ -336,6 +346,11 @@ function renderCharts() {
         renderQlcSumChart();
         renderQlcSpanChart();
         renderQlcBackFreqChart();
+    } else if (activeLottery === 'kl8') {
+        renderKl8FreqChart();
+        renderKl8SumChart();
+        renderKl8SpanChart();
+        renderKl8OddEvenChart();
     } else if (activeLottery === 'fc3d') {
         renderFc3dFreqChart();
         renderFc3dSumChart();
@@ -570,6 +585,8 @@ function renderOmitValues() {
         renderSsqOmitValues();
     } else if (activeLottery === 'qlc') {
         renderQlcOmitValues();
+    } else if (activeLottery === 'kl8') {
+        renderKl8OmitValues();
     } else if (activeLottery === 'fc3d') {
         renderFc3dOmitValues();
     } else {
@@ -1238,6 +1255,169 @@ function renderQlcOmitValues() {
             <h4>特选 (01-30)</h4>
             <div class="omit-balls">${omitBallsHtml(backOmit, backNumbers, pad2)}</div>
         </div>`;
+}
+
+// ===== 快乐8 =====
+
+// 渲染快乐8表格（20个号码）
+function renderKl8Table() {
+    const tbody = document.getElementById('kl8TableBody');
+    const pageData = currentPageData();
+
+    tbody.innerHTML = pageData.map(item => {
+        const nums = item.numbers.map(n => parseInt(n));
+        const sum = nums.reduce((a, b) => a + b, 0);
+        const span = Math.max(...nums) - Math.min(...nums);
+        const balls = item.numbers.map(n => `<span class="kl8-ball">${n}</span>`).join('');
+
+        return `<tr>
+            <td>${item.issue_no}</td>
+            <td>${item.date}</td>
+            <td colspan="20" class="kl8-cell"><div class="kl8-group">${balls}</div></td>
+            <td>${sum}</td>
+            <td>${span}</td>
+        </tr>`;
+    }).join('');
+}
+
+// 快乐8号码频率（01-80）
+function renderKl8FreqChart() {
+    const ctx = document.getElementById('kl8FreqChart').getContext('2d');
+    const numbers = Array.from({ length: 80 }, (_, i) => i + 1);
+    const freq = {};
+    numbers.forEach(n => { freq[n] = 0; });
+
+    activeData().forEach(item => {
+        item.numbers.map(Number).forEach(n => { freq[n]++; });
+    });
+
+    charts.kl8Freq = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: numbers.map(n => (n < 10 ? '0' + n : String(n))),
+            datasets: [{
+                label: '出现期数',
+                data: numbers.map(n => freq[n]),
+                backgroundColor: '#00cec980',
+                borderColor: '#00cec9',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// 快乐8和值分布（20个号码之和）
+function renderKl8SumChart() {
+    const ctx = document.getElementById('kl8SumChart').getContext('2d');
+    const sumFreq = {};
+
+    activeData().forEach(item => {
+        const sum = item.numbers.reduce((a, b) => +a + +b, 0);
+        sumFreq[sum] = (sumFreq[sum] || 0) + 1;
+    });
+
+    const labels = Object.keys(sumFreq).sort((a, b) => a - b);
+
+    charts.kl8Sum = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '期数',
+                data: labels.map(l => sumFreq[l]),
+                backgroundColor: '#667eea80',
+                borderColor: '#667eea',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// 快乐8跨度分布
+function renderKl8SpanChart() {
+    const ctx = document.getElementById('kl8SpanChart').getContext('2d');
+    const spanFreq = {};
+
+    activeData().forEach(item => {
+        const nums = item.numbers.map(Number);
+        const span = Math.max(...nums) - Math.min(...nums);
+        spanFreq[span] = (spanFreq[span] || 0) + 1;
+    });
+
+    const labels = Object.keys(spanFreq).sort((a, b) => a - b);
+
+    charts.kl8Span = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '期数',
+                data: labels.map(l => spanFreq[l]),
+                backgroundColor: '#43e97b80',
+                borderColor: '#43e97b',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// 快乐8奇偶个数分布（20个号码中奇数的个数 0-20）
+function renderKl8OddEvenChart() {
+    const ctx = document.getElementById('kl8OddEvenChart').getContext('2d');
+    const oeFreq = {};
+    for (let i = 0; i <= 20; i++) oeFreq[i] = 0;
+
+    activeData().forEach(item => {
+        const odd = item.numbers.filter(n => parseInt(n) % 2 === 1).length;
+        oeFreq[odd]++;
+    });
+
+    const labels = Object.keys(oeFreq);
+
+    charts.kl8OddEven = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels.map(l => l + '奇' + (20 - l) + '偶'),
+            datasets: [{
+                label: '期数',
+                data: labels.map(l => oeFreq[l]),
+                backgroundColor: '#fa709a80',
+                borderColor: '#fa709a',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// 快乐8遗漏值（01-80）
+function renderKl8OmitValues() {
+    const grid = document.getElementById('omitGrid');
+    const data = activeData();
+    const pad2 = n => (n < 10 ? '0' + n : String(n));
+    const numbers = Array.from({ length: 80 }, (_, i) => i + 1);
+
+    const omitValues = calcOmitValues(data, numbers, item => item.numbers.map(Number));
+
+    grid.innerHTML = `<div class="omit-position">
+        <h4>号码 (01-80)</h4>
+        <div class="omit-balls">${omitBallsHtml(omitValues, numbers, pad2)}</div>
+    </div>`;
 }
 
 // ===== 福彩3D =====

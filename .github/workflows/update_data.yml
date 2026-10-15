@@ -44,6 +44,9 @@ jobs:
       - name: 爬取七乐彩数据
         run: python scripts/fetch_qlc.py --update
 
+      - name: 爬取快乐8数据
+        run: python scripts/fetch_kl8.py --update
+
       - name: 更新 data.js
         run: |
           python3 -c "
@@ -76,6 +79,10 @@ jobs:
           # 七乐彩数据
           with open('datas/qlc_all_data.json', 'r', encoding='utf-8') as f:
               qlc_data = json.load(f)
+
+          # 快乐8数据
+          with open('datas/kl8_all_data.json', 'r', encoding='utf-8') as f:
+              kl8_data = json.load(f)
 
           # 生成排列五 data.js
           with open('docs/assets/data/data.js', 'w', encoding='utf-8') as f:
@@ -119,6 +126,12 @@ jobs:
               json.dump(qlc_data, f, ensure_ascii=False, separators=(',', ':'))
               f.write(';\n')
 
+          # 生成快乐8 data.js
+          with open('docs/assets/data/data_kl8.js', 'w', encoding='utf-8') as f:
+              f.write('const LOTTERY_DATA_KL8 = ')
+              json.dump(kl8_data, f, ensure_ascii=False, separators=(',', ':'))
+              f.write(';\n')
+
           print(f'排列五: {len(p5_data)} 条')
           print(f'排列三: {len(p3_data)} 条')
           print(f'大乐透: {len(dlt_data)} 条')
@@ -126,6 +139,7 @@ jobs:
           print(f'双色球: {len(ssq_data)} 条')
           print(f'福彩3D: {len(fc3d_data)} 条')
           print(f'七乐彩: {len(qlc_data)} 条')
+          print(f'快乐8: {len(kl8_data)} 条')
           "
 
       - name: 更新 README 数据概览
@@ -147,6 +161,8 @@ jobs:
               fc3d = json.load(f)
           with open('datas/qlc_all_data.json', 'r', encoding='utf-8') as f:
               qlc = json.load(f)
+          with open('datas/kl8_all_data.json', 'r', encoding='utf-8') as f:
+              kl8 = json.load(f)
 
           def stats(data):
               first, last = data[0], data[-1]
@@ -159,6 +175,7 @@ jobs:
           ss, ssd, se, sed, sc = stats(ssq)
           fs, fsd, fe, fed, fc = stats(fc3d)
           qls, qlsd, qle, qled, qlc = stats(qlc)
+          ks, ksd, ke, ked, kc = stats(kl8)
 
           HEADING = '## 📊 数据概览'
 
@@ -175,6 +192,7 @@ jobs:
               row('🔴', '双色球', ss, ssd, se, sed, sc),
               row('🎲', '福彩3D', fs, fsd, fe, fed, fc),
               row('🟡', '七乐彩', qls, qlsd, qle, qled, qlc),
+              row('🟢', '快乐8', ks, ksd, ke, ked, kc),
           ])
 
           with open('README.md', 'r', encoding='utf-8') as f:
@@ -188,15 +206,15 @@ jobs:
           with open('README.md', 'w', encoding='utf-8') as f:
               f.write(content)
 
-          print(f'排列三: {p3c} 条 | 排列五: {p5c} 条 | 大乐透: {dc} 条 | 7星彩: {qc} 条 | 双色球: {sc} 条 | 福彩3D: {fc} 条 | 七乐彩: {qlc} 条')
+          print(f'排列三: {p3c} 条 | 排列五: {p5c} 条 | 大乐透: {dc} 条 | 7星彩: {qc} 条 | 双色球: {sc} 条 | 福彩3D: {fc} 条 | 七乐彩: {qlc} 条 | 快乐8: {kc} 条')
           "
 
       - name: 提交并推送
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add datas/pl3_all_data.json datas/pl5_all_data.json datas/dlt_all_data.json datas/qxc_all_data.json datas/ssq_all_data.json datas/fc3d_all_data.json datas/qlc_all_data.json \
-            docs/assets/data/data.js docs/assets/data/data_p3.js docs/assets/data/data_dlt.js docs/assets/data/data_qxc.js docs/assets/data/data_ssq.js docs/assets/data/data_fc3d.js docs/assets/data/data_qlc.js \
+          git add datas/pl3_all_data.json datas/pl5_all_data.json datas/dlt_all_data.json datas/qxc_all_data.json datas/ssq_all_data.json datas/fc3d_all_data.json datas/qlc_all_data.json datas/kl8_all_data.json \
+            docs/assets/data/data.js docs/assets/data/data_p3.js docs/assets/data/data_dlt.js docs/assets/data/data_qxc.js docs/assets/data/data_ssq.js docs/assets/data/data_fc3d.js docs/assets/data/data_qlc.js docs/assets/data/data_kl8.js \
             README.md
           git diff --staged --quiet || git commit -m "更新彩票数据 $(date +%Y-%m-%d)"
           git push

@@ -16,6 +16,7 @@
             <button class="switch-btn" data-lottery="qxc" onclick="setLottery('qxc')">7星彩</button>
             <button class="switch-btn" data-lottery="ssq" onclick="setLottery('ssq')">双色球</button>
             <button class="switch-btn" data-lottery="qlc" onclick="setLottery('qlc')">七乐彩</button>
+            <button class="switch-btn" data-lottery="kl8" onclick="setLottery('kl8')">快乐8</button>
             <button class="switch-btn" data-lottery="fc3d" onclick="setLottery('fc3d')">福彩3D</button>
         </div>
 
@@ -272,6 +273,49 @@
             </div>
         </div>
 
+        <!-- 快乐8数据表格 -->
+        <div class="table-container" id="kl8TableContainer" hidden>
+            <table id="kl8Table">
+                <thead>
+                    <tr>
+                        <th>期号</th>
+                        <th>日期</th>
+                        <th colspan="20" class="kl8-header">开奖号码（01-80 摇出20个）</th>
+                        <th>和值</th>
+                        <th>跨度</th>
+                    </tr>
+                </thead>
+                <tbody id="kl8TableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- 快乐8统计图表 -->
+        <div class="charts-section" id="chartsKl8" hidden>
+            <h2>统计分析</h2>
+
+            <div class="chart-row">
+                <div class="chart-box">
+                    <h3>号码频率统计（01-80）</h3>
+                    <canvas id="kl8FreqChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>和值分布（20个号码之和）</h3>
+                    <canvas id="kl8SumChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-row">
+                <div class="chart-box">
+                    <h3>跨度分布</h3>
+                    <canvas id="kl8SpanChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>奇偶个数分布</h3>
+                    <canvas id="kl8OddEvenChart"></canvas>
+                </div>
+            </div>
+        </div>
+
         <!-- 福彩3D数据表格 -->
         <div class="table-container" id="fc3dTableContainer" hidden>
             <table id="fc3dTable">
@@ -328,6 +372,7 @@
     <script src="assets/data/data_qxc.js"></script>
     <script src="assets/data/data_ssq.js"></script>
     <script src="assets/data/data_qlc.js"></script>
+    <script src="assets/data/data_kl8.js"></script>
     <script src="assets/data/data_fc3d.js"></script>
     <script src="assets/js/app.js"></script>
 </body>
