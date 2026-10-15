@@ -11,6 +11,7 @@ const LOTTERY_META = {
     dlt: { title: '超级大乐透历史数据' },
     qxc: { title: '7星彩历史数据' },
     ssq: { title: '双色球历史数据' },
+    qlc: { title: '七乐彩历史数据' },
     fc3d: { title: '福彩3D历史数据' }
 };
 
@@ -24,6 +25,9 @@ function activeData() {
     }
     if (activeLottery === 'ssq') {
         return typeof LOTTERY_DATA_SSQ !== 'undefined' ? LOTTERY_DATA_SSQ : [];
+    }
+    if (activeLottery === 'qlc') {
+        return typeof LOTTERY_DATA_QLC !== 'undefined' ? LOTTERY_DATA_QLC : [];
     }
     if (activeLottery === 'fc3d') {
         return typeof LOTTERY_DATA_FC3D !== 'undefined' ? LOTTERY_DATA_FC3D : [];
@@ -79,36 +83,43 @@ function toggleSections() {
     const isDlt = activeLottery === 'dlt';
     const isQxc = activeLottery === 'qxc';
     const isSsq = activeLottery === 'ssq';
+    const isQlc = activeLottery === 'qlc';
     const isFc3d = activeLottery === 'fc3d';
-    document.getElementById('pl5TableContainer').hidden = isDlt || isQxc || isSsq || isFc3d;
+    const isOther = isDlt || isQxc || isSsq || isQlc || isFc3d;
+    document.getElementById('pl5TableContainer').hidden = isOther;
     document.getElementById('dltTableContainer').hidden = !isDlt;
     document.getElementById('qxcTableContainer').hidden = !isQxc;
     document.getElementById('ssqTableContainer').hidden = !isSsq;
+    document.getElementById('qlcTableContainer').hidden = !isQlc;
     document.getElementById('fc3dTableContainer').hidden = !isFc3d;
-    document.getElementById('chartsPl5').hidden = isDlt || isQxc || isSsq || isFc3d;
+    document.getElementById('chartsPl5').hidden = isOther;
     document.getElementById('chartsDlt').hidden = !isDlt;
     document.getElementById('chartsQxc').hidden = !isQxc;
     document.getElementById('chartsSsq').hidden = !isSsq;
+    document.getElementById('chartsQlc').hidden = !isQlc;
     document.getElementById('chartsFc3d').hidden = !isFc3d;
 
     const omitTitle = document.getElementById('omitTitle');
     if (isDlt) omitTitle.textContent = '当前遗漏值（前区 01-35 / 后区 01-12）';
     else if (isQxc) omitTitle.textContent = '当前遗漏值（前6位 0-9 / 特别号 0-14）';
     else if (isSsq) omitTitle.textContent = '当前遗漏值（红球 01-33 / 蓝球 01-16）';
+    else if (isQlc) omitTitle.textContent = '当前遗漏值（正选 01-30 / 特选 01-30）';
     else if (isFc3d) omitTitle.textContent = '当前遗漏值（百位 / 十位 / 个位）';
     else omitTitle.textContent = '当前遗漏值（距离上次开出期数）';
-    document.getElementById('omitGrid').classList.toggle('wide', isDlt || isQxc || isSsq || isFc3d);
+    document.getElementById('omitGrid').classList.toggle('wide', isOther);
 }
 
-// 初始化年份筛选
+// 初始化年份筛选（期号可能为5位 YYNNN 或 7位 YYYYNNN）
 function initYearFilter() {
-    const years = [...new Set(activeData().map(d => d.issue_no.substring(0, 2)))].sort();
+    const data = activeData();
+    const isLong = data.length > 0 && data[0].issue_no.length > 5;
+    const years = [...new Set(data.map(d => isLong ? d.issue_no.substring(0, 4) : d.issue_no.substring(0, 2)))].sort();
     const select = document.getElementById('yearFilter');
     select.innerHTML = '<option value="">全部</option>';
     years.forEach(year => {
         const option = document.createElement('option');
         option.value = year;
-        option.textContent = '20' + year + '年';
+        option.textContent = (isLong ? year : '20' + year) + '年';
         select.appendChild(option);
     });
 }
@@ -121,6 +132,8 @@ function renderTable() {
         renderQxcTable();
     } else if (activeLottery === 'ssq') {
         renderSsqTable();
+    } else if (activeLottery === 'qlc') {
+        renderQlcTable();
     } else if (activeLottery === 'fc3d') {
         renderFc3dTable();
     } else {
@@ -318,6 +331,11 @@ function renderCharts() {
         renderSsqSumChart();
         renderSsqSpanChart();
         renderSsqBackFreqChart();
+    } else if (activeLottery === 'qlc') {
+        renderQlcFreqChart();
+        renderQlcSumChart();
+        renderQlcSpanChart();
+        renderQlcBackFreqChart();
     } else if (activeLottery === 'fc3d') {
         renderFc3dFreqChart();
         renderFc3dSumChart();
@@ -550,6 +568,8 @@ function renderOmitValues() {
         renderQxcOmitValues();
     } else if (activeLottery === 'ssq') {
         renderSsqOmitValues();
+    } else if (activeLottery === 'qlc') {
+        renderQlcOmitValues();
     } else if (activeLottery === 'fc3d') {
         renderFc3dOmitValues();
     } else {
@@ -1045,6 +1065,177 @@ function renderSsqOmitValues() {
         </div>
         <div class="omit-position">
             <h4>蓝球 (01-16)</h4>
+            <div class="omit-balls">${omitBallsHtml(backOmit, backNumbers, pad2)}</div>
+        </div>`;
+}
+
+// ===== 七乐彩 =====
+
+// 渲染七乐彩表格（7正选 + 1特选）
+function renderQlcTable() {
+    const tbody = document.getElementById('qlcTableBody');
+    const pageData = currentPageData();
+
+    tbody.innerHTML = pageData.map(item => {
+        const front = item.front.map(n => parseInt(n));
+        const sum = front.reduce((a, b) => a + b, 0);
+        const span = Math.max(...front) - Math.min(...front);
+        const frontBalls = item.front.map(n => `<span class="qlc-front-ball">${n}</span>`).join('');
+        const backBall = `<span class="qlc-back-ball">${item.back[0]}</span>`;
+
+        return `<tr>
+            <td>${item.issue_no}</td>
+            <td>${item.date}</td>
+            <td colspan="7" class="qlc-front-cell"><div class="qlc-group">${frontBalls}</div></td>
+            <td class="qlc-back-cell"><div class="qlc-group">+${backBall}</div></td>
+            <td>${sum}</td>
+            <td>${span}</td>
+        </tr>`;
+    }).join('');
+}
+
+// 七乐彩正选号码频率（01-30）
+function renderQlcFreqChart() {
+    const ctx = document.getElementById('qlcFreqChart').getContext('2d');
+    const numbers = Array.from({ length: 30 }, (_, i) => i + 1);
+    const freq = {};
+    numbers.forEach(n => { freq[n] = 0; });
+
+    activeData().forEach(item => {
+        item.front.map(Number).forEach(n => { freq[n]++; });
+    });
+
+    charts.qlcFreq = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: numbers.map(n => (n < 10 ? '0' + n : String(n))),
+            datasets: [{
+                label: '出现期数',
+                data: numbers.map(n => freq[n]),
+                backgroundColor: '#f39c1280',
+                borderColor: '#f39c12',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// 七乐彩和值分布
+function renderQlcSumChart() {
+    const ctx = document.getElementById('qlcSumChart').getContext('2d');
+    const sumFreq = {};
+
+    activeData().forEach(item => {
+        const sum = item.front.reduce((a, b) => +a + +b, 0);
+        sumFreq[sum] = (sumFreq[sum] || 0) + 1;
+    });
+
+    const labels = Object.keys(sumFreq).sort((a, b) => a - b);
+
+    charts.qlcSum = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '期数',
+                data: labels.map(l => sumFreq[l]),
+                backgroundColor: '#667eea80',
+                borderColor: '#667eea',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// 七乐彩跨度分布
+function renderQlcSpanChart() {
+    const ctx = document.getElementById('qlcSpanChart').getContext('2d');
+    const spanFreq = {};
+
+    activeData().forEach(item => {
+        const nums = item.front.map(Number);
+        const span = Math.max(...nums) - Math.min(...nums);
+        spanFreq[span] = (spanFreq[span] || 0) + 1;
+    });
+
+    const labels = Object.keys(spanFreq).sort((a, b) => a - b);
+
+    charts.qlcSpan = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '期数',
+                data: labels.map(l => spanFreq[l]),
+                backgroundColor: '#43e97b80',
+                borderColor: '#43e97b',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// 七乐彩特选号码频率（01-30）
+function renderQlcBackFreqChart() {
+    const ctx = document.getElementById('qlcBackFreqChart').getContext('2d');
+    const numbers = Array.from({ length: 30 }, (_, i) => i + 1);
+    const freq = {};
+    numbers.forEach(n => { freq[n] = 0; });
+
+    activeData().forEach(item => {
+        freq[parseInt(item.back[0])]++;
+    });
+
+    charts.qlcBackFreq = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: numbers.map(n => (n < 10 ? '0' + n : String(n))),
+            datasets: [{
+                label: '出现期数',
+                data: numbers.map(n => freq[n]),
+                backgroundColor: '#e8439380',
+                borderColor: '#e84393',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// 七乐彩遗漏值（正选 01-30 / 特选 01-30）
+function renderQlcOmitValues() {
+    const grid = document.getElementById('omitGrid');
+    const data = activeData();
+    const pad2 = n => (n < 10 ? '0' + n : String(n));
+    const range = (from, to) => Array.from({ length: to - from + 1 }, (_, i) => from + i);
+
+    const frontNumbers = range(1, 30);
+    const backNumbers = range(1, 30);
+
+    const frontOmit = calcOmitValues(data, frontNumbers, item => item.front.map(Number));
+    const backOmit = calcOmitValues(data, backNumbers, item => item.back.map(Number));
+
+    grid.innerHTML = `<div class="omit-position">
+            <h4>正选 (01-30)</h4>
+            <div class="omit-balls">${omitBallsHtml(frontOmit, frontNumbers, pad2)}</div>
+        </div>
+        <div class="omit-position">
+            <h4>特选 (01-30)</h4>
             <div class="omit-balls">${omitBallsHtml(backOmit, backNumbers, pad2)}</div>
         </div>`;
 }

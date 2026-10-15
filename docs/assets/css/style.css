@@ -561,6 +561,66 @@ tr:hover {
     font-weight: bold;
 }
 
+/* 七乐彩 */
+.qlc-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.qlc-front-ball,
+.qlc-back-ball {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.qlc-front-ball:hover,
+.qlc-back-ball:hover {
+    transform: scale(1.1);
+}
+
+.qlc-front-ball {
+    background: linear-gradient(135deg, #f39c12, #d68910);
+    box-shadow: 0 2px 6px rgba(214, 137, 16, 0.4);
+}
+
+.qlc-back-ball {
+    background: linear-gradient(135deg, #e84393, #d63384);
+    box-shadow: 0 2px 6px rgba(214, 51, 132, 0.4);
+}
+
+.qlc-front-cell {
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.08), rgba(255, 220, 150, 0.03));
+    border: 2px solid rgba(243, 156, 18, 0.35);
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(243, 156, 18, 0.12);
+}
+
+.qlc-back-cell {
+    background: linear-gradient(135deg, rgba(232, 67, 147, 0.08), rgba(255, 180, 210, 0.03));
+    border: 2px solid rgba(232, 67, 147, 0.35);
+    border-radius: 20px;
+}
+
+.qlc-front-header {
+    color: #f39c12;
+    font-weight: bold;
+}
+
+.qlc-back-header {
+    color: #e84393;
+    font-weight: bold;
+}
+
 /* 福彩3D */
 .fc3d-group {
     display: inline-flex;
