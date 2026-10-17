@@ -685,16 +685,16 @@ tr:hover {
     transform: scale(1.1);
 }
 
-.fc3d-ball.n0 { background: linear-gradient(135deg, #667eea, #5a6fd6); box-shadow: 0 2px 6px rgba(90, 111, 214, 0.4); }
-.fc3d-ball.n1 { background: linear-gradient(135deg, #f093fb, #d97ee8); box-shadow: 0 2px 6px rgba(217, 126, 232, 0.4); }
-.fc3d-ball.n2 { background: linear-gradient(135deg, #4facfe, #3d97e8); box-shadow: 0 2px 6px rgba(61, 151, 232, 0.4); }
-.fc3d-ball.n3 { background: linear-gradient(135deg, #43e97b, #35c765); box-shadow: 0 2px 6px rgba(53, 199, 101, 0.4); }
-.fc3d-ball.n4 { background: linear-gradient(135deg, #fa709a, #e85a85); box-shadow: 0 2px 6px rgba(232, 90, 133, 0.4); }
-.fc3d-ball.n5 { background: linear-gradient(135deg, #ff6b6b, #ee5a5a); box-shadow: 0 2px 6px rgba(238, 90, 90, 0.4); }
-.fc3d-ball.n6 { background: linear-gradient(135deg, #f39c12, #d68910); box-shadow: 0 2px 6px rgba(214, 137, 16, 0.4); }
+.fc3d-ball.n0 { background: linear-gradient(135deg, #506be7, #5268d4); box-shadow: 0 2px 6px rgba(82, 104, 212, 0.4); }
+.fc3d-ball.n1 { background: linear-gradient(135deg, #c908e0, #ba26d2); box-shadow: 0 2px 6px rgba(186, 38, 210, 0.4); }
+.fc3d-ball.n2 { background: linear-gradient(135deg, #0176dd, #1874c7); box-shadow: 0 2px 6px rgba(24, 116, 199, 0.4); }
+.fc3d-ball.n3 { background: linear-gradient(135deg, #108939, #228142); box-shadow: 0 2px 6px rgba(34, 129, 66, 0.4); }
+.fc3d-ball.n4 { background: linear-gradient(135deg, #e9084d, #db1f58); box-shadow: 0 2px 6px rgba(219, 31, 88, 0.4); }
+.fc3d-ball.n5 { background: linear-gradient(135deg, #ee0000, #e21717); box-shadow: 0 2px 6px rgba(226, 23, 23, 0.4); }
+.fc3d-ball.n6 { background: linear-gradient(135deg, #a66908, #9e650c); box-shadow: 0 2px 6px rgba(158, 101, 12, 0.4); }
 .fc3d-ball.n7 { background: linear-gradient(135deg, #9b59b6, #884ea0); box-shadow: 0 2px 6px rgba(136, 78, 160, 0.4); }
-.fc3d-ball.n8 { background: linear-gradient(135deg, #3498db, #2e86c1); box-shadow: 0 2px 6px rgba(46, 134, 193, 0.4); }
-.fc3d-ball.n9 { background: linear-gradient(135deg, #00cec9, #00b894); box-shadow: 0 2px 6px rgba(0, 184, 148, 0.4); }
+.fc3d-ball.n8 { background: linear-gradient(135deg, #217bb8, #2976ab); box-shadow: 0 2px 6px rgba(41, 118, 171, 0.4); }
+.fc3d-ball.n9 { background: linear-gradient(135deg, #008481, #008168); box-shadow: 0 2px 6px rgba(0, 129, 104, 0.4); }
 
 .fc3d-cell {
     background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(200, 210, 255, 0.03));
