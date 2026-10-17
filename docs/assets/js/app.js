@@ -1431,7 +1431,7 @@ function renderFc3dTable() {
         const nums = item.numbers.map(n => parseInt(n));
         const sum = nums.reduce((a, b) => a + b, 0);
         const span = Math.max(...nums) - Math.min(...nums);
-        const balls = item.numbers.map(n => `<span class="fc3d-ball n${n}">${n}</span>`).join('');
+        const balls = item.numbers.map(n => `<span class="fc3d-ball n${parseInt(n)}">${n}</span>`).join('');
 
         return `<tr>
             <td>${item.issue_no}</td>
