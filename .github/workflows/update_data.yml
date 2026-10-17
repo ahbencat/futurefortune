@@ -2,7 +2,7 @@ name: 更新彩票数据
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # 每天凌晨2点执行
+    - cron: '0 20 * * *'  # 每天 UTC 20:00（北京时间次日凌晨4点）执行
   workflow_dispatch:      # 支持手动触发
 
 jobs:
