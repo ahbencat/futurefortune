@@ -119,9 +119,13 @@ GitHub Actions 每天凌晨自动运行：
 3. 抓取超级大乐透最新开奖数据
 4. 抓取7星彩最新开奖数据
 5. 抓取双色球最新开奖数据
-6. 应用 `scripts/data_patches.json` 中的数据修正（源数据的日期错误、缺失期号）
-7. 生成 `docs/assets/data/` 下的 `data.js`、`data_p3.js`、`data_dlt.js`、`data_qxc.js`、`data_ssq.js`
-8. 自动 commit & push
+6. 抓取福彩3D最新开奖数据（500.com XML）
+7. 抓取七乐彩最新开奖数据（500.com XML）
+8. 抓取快乐8最新开奖数据（500.com XML）
+9. 应用 `scripts/data_patches.json` 中的数据修正（排列三/排列五/大乐透的源数据日期错误、缺失期号）
+10. 生成 `docs/assets/data/` 下的 `data.js`、`data_p3.js`、`data_dlt.js`、`data_qxc.js`、`data_ssq.js`、`data_fc3d.js`、`data_qlc.js`、`data_kl8.js`
+11. 刷新 README 数据概览表
+12. 自动 commit & push
 
 > ⏰ 定时任务设定为每日 **02:00 UTC（北京时间 10:00）**。受 GitHub Actions 负载影响，实际触发时间**可能延迟数小时**。
 > 抓取采用增量方式且幂等，延迟不会造成数据丢失，恢复运行后会自动追平最新开奖。
