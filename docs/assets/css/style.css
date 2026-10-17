@@ -323,9 +323,9 @@ tr:hover {
     font-weight: bold;
 }
 
-.omit-ball.hot { background: #ff6b6b; color: white; }
+.omit-ball.hot { background: #ff6b6b; color: #333; }
 .omit-ball.warm { background: #ffd93d; color: #333; }
-.omit-ball.cold { background: #6bcf7f; color: white; }
+.omit-ball.cold { background: #6bcf7f; color: #333; }
 
 /* 彩种切换（页面最顶部） */
 .lottery-switch {
