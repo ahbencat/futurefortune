@@ -67,7 +67,7 @@ def parse_xml(xml_text: str) -> list:
 
     records = []
     for expect, opencode, opentime in rows:
-        numbers = [n.strip().zfill(2) for n in opencode.split(",")]
+        numbers = [n.strip() for n in opencode.split(",")]  # 每位本就是 0-9 单数字，无需补零
         date = opentime.split(" ")[0] if " " in opentime else opentime
         records.append({
             "date": date,
@@ -79,9 +79,14 @@ def parse_xml(xml_text: str) -> list:
 
 
 def merge_data(existing: list, new_items: list) -> tuple:
-    """按 issue_no 合并去重（新覆盖旧），按期号升序"""
+    """按 issue_no 合并去重（新覆盖旧），按期号升序
+
+    号码统一为 0-9 单数字字符串（历史数据曾用补零格式如 "02"，在此收敛）
+    """
     merged = {}
     for item in list(existing) + list(new_items):
+        item = dict(item)
+        item["numbers"] = [str(int(n)) for n in item["numbers"]]
         merged[item["issue_no"]] = item
     result = sorted(merged.values(), key=lambda x: int(x["issue_no"]))
     added = len(result) - len({item["issue_no"] for item in existing})
