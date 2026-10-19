@@ -92,10 +92,10 @@
 │   ├── fetch_lottery.py     # 排列3/排列5/7星彩 抓取（--type p3/p5/qxc）
 │   ├── derive_p3.py         # 排列三派生（取排列五前三位，无需抓取）
 │   ├── fetch_dlt.py         # 大乐透抓取
-│   ├── fetch_ssq.py         # 双色球抓取（500.com datachart）
-│   ├── fetch_fc3d.py        # 福彩3D抓取（500.com XML）
-│   ├── fetch_qlc.py         # 七乐彩抓取（500.com XML）
-│   ├── fetch_kl8.py         # 快乐8抓取（500.com XML）
+│   ├── fetch_ssq.py         # 双色球抓取
+│   ├── fetch_fc3d.py        # 福彩3D抓取
+│   ├── fetch_qlc.py         # 七乐彩抓取
+│   ├── fetch_kl8.py         # 快乐8抓取
 │   └── data_patches.json    # 数据修正表（源数据的已知错误/缺失期号）
 ├── datas/                   # 原始数据（抓取结果，单一事实来源）
 │   ├── pl3_all_data.json     # 排列三
@@ -119,9 +119,9 @@ GitHub Actions 每天凌晨自动运行：
 3. 抓取超级大乐透最新开奖数据
 4. 抓取7星彩最新开奖数据
 5. 抓取双色球最新开奖数据
-6. 抓取福彩3D最新开奖数据（500.com XML）
-7. 抓取七乐彩最新开奖数据（500.com XML）
-8. 抓取快乐8最新开奖数据（500.com XML）
+6. 抓取福彩3D最新开奖数据
+7. 抓取七乐彩最新开奖数据
+8. 抓取快乐8最新开奖数据
 9. 应用 `scripts/data_patches.json` 中的数据修正（排列三/排列五/大乐透的源数据日期错误、缺失期号）
 10. 生成 `docs/assets/data/` 下的 `data.js`、`data_p3.js`、`data_dlt.js`、`data_qxc.js`、`data_ssq.js`、`data_fc3d.js`、`data_qlc.js`、`data_kl8.js`
 11. 刷新 README 数据概览表
