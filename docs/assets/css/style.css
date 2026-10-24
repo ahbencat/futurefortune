@@ -108,6 +108,8 @@ table {
 th, td {
     padding: 10px 12px;
     text-align: center;
+    vertical-align: middle;
+    height: 64px;
 }
 
 th {

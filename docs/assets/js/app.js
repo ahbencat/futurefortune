@@ -16,6 +16,17 @@ const LOTTERY_META = {
     fc3d: { title: '福彩3D历史数据' }
 };
 
+// 不同彩种默认搜索值（示例期号）
+const LOTTERY_SEARCH_DEFAULTS = {
+    pl5: '26268',
+    dlt: '25117',
+    qxc: '26118',
+    ssq: '2026118',
+    qlc: '2026119',
+    kl8: '2026275',
+    fc3d: '2026277'
+};
+
 // 当前彩种的数据集
 function activeData() {
     if (activeLottery === 'dlt') {
@@ -55,7 +66,7 @@ function setLottery(type) {
     currentPage = 1;
     filteredData = sortByIssueDesc(activeData());
 
-    document.getElementById('searchInput').value = '';
+    document.getElementById('searchInput').value = LOTTERY_SEARCH_DEFAULTS[type] || '';
     document.getElementById('yearFilter').value = '';
     initYearFilter();
     updateHeader();
