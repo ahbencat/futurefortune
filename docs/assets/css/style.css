@@ -39,10 +39,10 @@ header h1 {
 
 .controls {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 24px;
     margin-bottom: 20px;
     padding: 15px;
     background: white;
@@ -226,12 +226,16 @@ tr:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    flex-wrap: wrap;
+    gap: 16px;
     margin-bottom: 30px;
 }
 
 .pagination button {
-    padding: 8px 20px;
+    padding: 8px 16px;
+    min-width: 88px;
+    text-align: center;
+    white-space: nowrap;
     background: white;
     border: 1px solid #ddd;
     border-radius: 6px;
@@ -239,13 +243,11 @@ tr:hover {
     font-size: 14px;
 }
 
-.pagination button:hover {
-    background: #f0f0f0;
-}
-
-.pagination button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+.pagination #pageInfo {
+    min-width: 140px;
+    text-align: center;
+    white-space: nowrap;
+    color: #333;
 }
 
 .charts-section {
@@ -337,7 +339,10 @@ tr:hover {
 }
 
 .switch-btn {
-    padding: 14px 44px;
+    padding: 14px 36px;
+    min-width: 150px;
+    text-align: center;
+    white-space: nowrap;
     background: white;
     border: 2px solid #e0e4ee;
     border-radius: 999px;
