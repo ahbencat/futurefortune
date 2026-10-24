@@ -229,8 +229,7 @@ tr:hover {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 30px;
+    gap: 12px;
 }
 
 .pagination button {

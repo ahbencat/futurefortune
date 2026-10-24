@@ -43,6 +43,13 @@
                     <option value="100">100条</option>
                 </select>
             </div>
+            <div class="pagination">
+                <button onclick="prevPage()">上一页</button>
+                <button onclick="jumpBack10()">前十页</button>
+                <span id="pageInfo">第 1 页 / 共 155 页</span>
+                <button onclick="nextPage()">下一页</button>
+                <button onclick="jumpForward10()">下十页</button>
+            </div>
         </div>
 
         <!-- 数据表格 -->
@@ -95,14 +102,7 @@
             </table>
         </div>
 
-        <!-- 分页 -->
-        <div class="pagination">
-            <button onclick="prevPage()">上一页</button>
-            <button onclick="jumpBack10()">前十页</button>
-            <span id="pageInfo">第 1 页 / 共 155 页</span>
-            <button onclick="nextPage()">下一页</button>
-            <button onclick="jumpForward10()">下十页</button>
-        </div>
+        <!-- 分页（已并入顶部搜索栏） -->
 
         <!-- 统计图表 -->
         <div class="charts-section" id="chartsPl5">
