@@ -88,6 +88,7 @@ header h1 {
     border: 1px solid #ddd;
     border-radius: 6px;
     font-size: 14px;
+    width: 86px;
 }
 
 .table-container {
@@ -245,9 +246,11 @@ tr:hover {
 }
 
 .pagination #pageInfo {
-    min-width: 140px;
+    width: 250px;
     text-align: center;
     white-space: nowrap;
+    overflow: hidden;
+    font-size: 14px;
     color: #333;
 }
 
@@ -730,6 +733,16 @@ tr:hover {
     
     .search-box input {
         width: 100%;
+    }
+
+    .pagination {
+        width: 100%;
+    }
+
+    .pagination #pageInfo {
+        width: auto;
+        flex: 1;
+        overflow: visible;
     }
 
     .switch-btn {
